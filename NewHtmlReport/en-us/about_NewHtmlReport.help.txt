@@ -1,0 +1,109 @@
+TOPIC
+    about_NewHtmlReport
+
+SHORT DESCRIPTION
+    A PowerShell module with cmdlets to create partial- or full HTML output
+    from data in a PowerShell session, and provides some additional
+    functionality and features beyond the wonderful ConvertTo-Html cmdlet.
+
+LONG DESCRIPTION
+    This module provides cmdlets for creating HTML to represent data from a
+    PowerShell session.  While it does leverage ConvertTo-Html for the some of
+    the final output, the module provides additional functionality by allowing
+    for "highlighting" of desired rows, and for handling number formatting in
+    the form of rounding, so as to remove the bit of additional work anytime a
+    user wants to round values for eventual output.
+
+    The module leverages the jQuery framework and the TableSorter jQuery plugin
+    for making consistent, usable table layouts for your data.  The module
+    expects that these JavaScript files are hosted centrally, which allows for
+    the generate HTML output to simply link to the JavaScript libraries,
+    instead of needing to embed the JavaScript code into each output file.
+    While there are example copies of these JS libraries in the "resources"
+    folder in the Git repository, consumers are encouraged to use their own,
+    current versions of these libraries, as the repo copies are not being kept
+    current as the libraries continue to grow.
+
+  CONFIGURATION
+      The module comes with a configuration file that is loaded into the
+      current PowerShell session at module import time.  The current means by
+      which to update the configuration is just manual file editing.  The
+      intention is to eventually support module configuration management
+      through another cmdlet in the module.
+
+      The configuration file (New-HtmlReport_configItems.ps1 in the module's
+      directory) holds items like:
+        - the base URI of the web server on which library- and style files
+            reside
+        - the URIs of the supporting web files (the JavaScript libraries and
+            the CSS file)
+        - some default HTML for the <HEAD> of new HTML reports, which includes
+            the references to the supporting JavaScript libraries, and some
+            JavaScript to enable table sorting and table row zebra striping
+
+      These configuration values are placed into a global configuration
+      variable for the current PowerShell session so that the NewHtmlReport
+      module's cmdlets can leverage them.
+
+      The consumer of this module is expected to place the pertinent resource
+      files on their web server in the appropriate locations (the locations
+      that they specified in the configuration file).  So, if you are using
+      "https://mywebserver.dom.com" as the base web server URI, and specified
+      "scripts/jquery.min.js", "scripts/jquery.tablesorter.min.js", and
+      "incl/reportingDefault.css" as the resource files' paths, then you need
+      to have copied "jquery.min.js" and "jquery.tablesorter.min.js" to the
+      filesystem location that corresponds to
+      https://mywebserver.dom.com/scripts/, and have copied
+      "reportingDefault.css" to the filesystem location that corresponds to
+      https://mywebserver.dom.com/incl/
+
+      And, as for the images used for the "ascending" and "descending"
+      indicators for column sort direction in HTML tables, the example CSS file
+      specifies a style selector that points at the relative URLs,
+      "/imgs/jq/asc.gif" and "/imgs/jq/desc.gif".  So, you can either specify
+      your own image URLs for these images, or, place your desired GIFs at
+      locations that correspond to these same URLs on your web server.  The CSS
+      selector statement for the ascending-sort image in the default CSS file,
+      for example:
+          table.tSorter thead tr .headerSortUp {
+            background-image: url(/imgs/jq/asc.gif);
+          }
+
+    USE CASES
+      The cmdlets in this module are useful for creating HTML for either full
+      web pages, or for creating the table HTML for use in some other HTML
+      document.  The full web pages are complete with code that will include
+      the JavaScript libraries and CSS style files from the configured web
+      server.  The table HTML is ready to be added to the body of such an HTML
+      document, but does not include the code to refer to these library- and
+      style files.  This is useful for when you want to build more than one
+      table to include in your full HTML page.
+
+      These cmdlets make it easy to round numeric values of properties with
+      just the flick of a switch parameter.  By using this switch parameter,
+      the cmdlet will round any numeric values to the specified number of
+      decimal places.  This makes it oh so easy to tidy up the values where you
+      don't need, say, thirteen decimal places of precision, and without
+      needing to add any numeric formatting handling to your PowerShell before
+      sending the objects to the NewHtmlReport module's cmdlets.
+
+      An additional feature is the ability to "highlight" desired rows of
+      data.  Say, a row whose object has a property that exceeds a certain
+      value threshold (like, a datastore whose used capacity is over some given
+      percentage), or that has a property that is not a standard, desired value
+      (like, a VMHost whose connection status is something other than,
+      "Connected").  This is handled by adding a particular property to any
+      input object whose row you wish to hightlight in this way.  See the
+      examples in the cmdlets' help for illustrations of how to utilize this
+      feature.
+
+EXAMPLES
+  All of the cmdlets have help and examples built in.  For help on a specific
+  cmdlet, use the normal route of "Get-Help -Full New-<someCmdlet>".
+
+
+KEYWORDS
+    HtmlReport
+
+SEE ALSO
+    The GitHub site from which you got this PSModule, or http://vNugglets.com
