@@ -57,14 +57,17 @@ LONG DESCRIPTION
       "reportingDefault.css" to the filesystem location that corresponds to
       https://mywebserver.dom.com/incl/
 
-      And, as for the images used for the "ascending" and "descending"
-      indicators for column sort direction in HTML tables, the example CSS file
-      specifies a style selector that points at the relative URLs,
-      "/imgs/jq/asc.gif" and "/imgs/jq/desc.gif".  So, you can either specify
-      your own image URLs for these images, or, place your desired GIFs at
-      locations that correspond to these same URLs on your web server.  The CSS
-      selector statement for the ascending-sort image in the default CSS file,
-      for example:
+      And, as for the images used for the "ascending", "descending", and
+      "sortable" indicators for column sort direction in HTML tables, the
+      example CSS file specifies a style selector that points at the relative
+      URLs, "/imgs/jq/asc.gif", "/imgs/jq/desc.gif", and "/imgs/jq/bg.gif"
+      respectively.  So, you can either specify your own image URLs for these
+      images, or, place your desired GIFs at locations that correspond to these
+      same URLs on your web server.  Or, you will just be sure to use CSS that
+      points to the image files that you desire, if any.  The CSS selector
+      statement for the ascending-sort image in the default CSS file, for
+      example:
+
           table.tSorter thead tr .headerSortUp {
             background-image: url(/imgs/jq/asc.gif);
           }
