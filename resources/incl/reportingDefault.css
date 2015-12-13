@@ -41,7 +41,7 @@ table.tSorter thead tr th {
 /* non-selected, sortable columns' header cell */
 table.tSorter thead tr {background-color: #CCCCCC;}
 table.tSorter thead tr .header {
-	background: url(/imgs/jq/bg.gif) no-repeat center right;
+	background: url(../imgs/jq/bg.gif) no-repeat center right;
 	cursor: pointer;
 }
 /* regular body cells in sorter table */
@@ -55,9 +55,9 @@ table.tSorter tbody tr.odd td {background-color:#F0F0F6;}
 /* for "even" alternating rows, when the "zebra" widget is used (correct class, right?) */
 /* table.tSorter tbody tr.even td {background-color:#FFFFFF;} */
 /* for header cell for column that is selected as sort-up column */
-table.tSorter thead tr .headerSortUp {background-image: url(/imgs/jq/asc.gif);}
+table.tSorter thead tr .headerSortUp {background-image: url(../imgs/jq/asc.gif);}
 /* for header cell for column that is selected as sort-down column */
-table.tSorter thead tr .headerSortDown {background-image: url(/imgs/jq/desc.gif);}
+table.tSorter thead tr .headerSortDown {background-image: url(../imgs/jq/desc.gif);}
 /* for header cell for column that is selected as sort column (up or down) */
 table.tSorter thead tr .headerSortDown, table.tSorter thead tr .headerSortUp {background-color: #6699CC;}
 /* for table caption */

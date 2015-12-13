@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<TITLE>My Combined Report</TITLE>
+<script type="text/javascript" src="resources/scripts/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="resources/scripts/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+	// extend the default setting to always include the zebra widget (which does the alternating row background colors)
+	$.tablesorter.defaults.widgets = ['zebra'];
+	// get the object of class "tSorter" and call the TableSorter() method on it
+	$(document).ready(function() {$(".tSorter").tablesorter();} );
+</script>
+<link rel="stylesheet" type="text/css" href="resources/incl/reportingDefault.css" />
+</head><body>
+<H3>Combined report of datastores and clusters</H3>
+
+<TABLE CLASS='tSorter'>
+<CAPTION CLASS='tblCaption'></CAPTION>
+<THEAD>
+	<TR><TH>Name</TH> <TH>FreeSpaceGB</TH> <TH>CapacityGB</TH></TR>
+</THEAD>
+<TBODY>
+	<TR><TD>hdwtest.array0.0</TD> <TD>270</TD> <TD>750</TD></TR>
+	<TR><TD>hdwtest.array0.1</TD> <TD>583</TD> <TD>750</TD></TR>
+	<TR><TD>super.xio0.021</TD> <TD>1341</TD> <TD>5120</TD></TR>
+	<TR><TD>super.xio0.022</TD> <TD>1354</TD> <TD>5120</TD></TR>
+	<TR><TD>super.xio0.023</TD> <TD>1511</TD> <TD>5120</TD></TR>
+	<TR><TD>super.xio0.024</TD> <TD>1729</TD> <TD>5120</TD></TR>
+	<TR><TD>super.xio0.025</TD> <TD>1282</TD> <TD>5120</TD></TR>
+	<TR><TD>super.xio0.026</TD> <TD>1453</TD> <TD>5120</TD></TR>
+	<TR><TD>nas0</TD> <TD>1611</TD> <TD>2170</TD></TR>
+	<TR><TD>vsanDatastore0</TD> <TD>8136</TD> <TD>13413</TD></TR>
+	<TR><TD>vsanDatastore1</TD> <TD>20090</TD> <TD>20120</TD></TR>
+	<TR><TD>ourLab.array1.0</TD> <TD>104</TD> <TD>750</TD></TR>
+	<TR><TD>ourLab.array1.1</TD> <TD>37</TD> <TD>750</TD></TR>
+	<TR><TD>ourLab.array1.2</TD> <TD>26</TD> <TD>750</TD></TR>
+</TBODY>
+</TABLE>
+<BR />
+<TABLE CLASS='tSorter'>
+<THEAD>
+	<TR><TH>Name</TH> <TH>EVCMode</TH> <TH>VsanEnabled</TH></TR>
+</THEAD>
+<TBODY>
+	<TR><TD>ourLab0</TD> <TD></TD> <TD>FALSE</TD></TR>
+	<TR><TD>SuperCluster</TD> <TD></TD> <TD>TRUE</TD></TR>
+	<TR><TD>Buddies</TD> <TD>intel-sandybridge</TD> <TD>TRUE</TD></TR>
+	<TR><TD>TestCluster0</TD> <TD>intel-nehalem</TD> <TD>FALSE</TD></TR>
+	<TR><TD>HdwTest</TD> <TD></TD> <TD>FALSE</TD></TR>
+	<TR><TD>oldCluster</TD> <TD>intel-merom</TD> <TD>FALSE</TD></TR>
+</TBODY>
+</TABLE>
+<table>
+</table>
+</body></html>
