@@ -4,10 +4,10 @@
 	New-HtmlReport -InputObject (dir c:\temp -filter *txt) -PreContent "blahh0","blahh1" -CssUri "/someFolder/someFile.css" -Property Name,LastWriteTime -Title "another test of output"
 	Create HTML output for an array of objects, with given stylesheet, and using built-in HTML for creating sortable table
 	.Example
-	New-HtmlReport -Title "My VMHost Report" -PostContent "Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss')" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -InputObject (Get-VMHost | Select Name,ConnectionState,MemoryTotalGB,@{n="bDoRowHighlight"; e={if ($_.ConnectionState -ne "Connected") {$true}}}) -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myVMHostReport.htm
+	New-HtmlReport -Title "My VMHost Report" -PreContent "<H3>VMHosts Info</H3>" -PostContent "Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -InputObject (Get-VMHost | Select Name,ConnectionState,MemoryTotalGB,@{n="bDoRowHighlight"; e={if ($_.ConnectionState -ne "Connected") {$true}}}) -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myVMHostReport.htm
 	Create an HTML report for some VMHosts, highlighting any row where the given VMhost is in a state other than "Connected", and write the HTML to a file
 	.Example
-	New-HtmlReport -Title "My Report" -PostContent "<BR />",(New-PageBodyTableHtml -InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore) -Property Name,FreeSpaceGB,CapacityGB -RoundNumber -PreContent "<H3>Combined report of datastores and clusters</H3>" | Out-File -Encoding ascii c:\temp\myCombinedReport.htm
+	New-HtmlReport -Title "My Combined Report" -PostContent "<BR />",(New-PageBodyTableHtml -InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore) -Property Name,FreeSpaceGB,CapacityGB -RoundNumber -PreContent "<H3>Combined report of datastores and clusters</H3>" | Out-File -Encoding ascii c:\temp\myCombinedReport.htm
 	Create an HTML report for a few things:  the Datastores in the current vCenter, and the clusters there as well. Then, write the HTML to a file.  Maybe not the most common/useful data to combine in a single report, but this example is to show how to place multiple interactive tables into the same new HTML report
 	.Outputs
 	String
