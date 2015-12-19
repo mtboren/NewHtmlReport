@@ -34,13 +34,26 @@
         <h3>
 <a id="examples-for-newhtmlreport-powershell-module" class="anchor" href="#examples-for-newhtmlreport-powershell-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples for NewHtmlReport PowerShell module</h3>
 
-<p>There are some example outputs at:</p>
-
-<ul>
-<li><a href="myCombinedReport.htm">myCombinedReport.htm</a>: report with multiple tables from multiple sources of data, each with independent sortability</li>
-<li>
-<a href="myVMHostReport.htm">myVMHostReport.htm</a>: report with some "highlighted" rows, giving an example of different styling for data items whose values are out of the "norm" range or not of the expected value</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Tsample report</th>
+<th>command that made it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="myVMHostReport.htm">myVMHostReport.htm</a>, with highlighted rows of VMHosts that are outside of the "norm"</td>
+<td><code>PS C:\&gt; New-HtmlReport -Title "My VMHost Report" -PreContent "&lt;H3&gt;VMHosts Info&lt;/H3&gt;" -PostContent "Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -InputObject (Get-VMHost | Select Name, ConnectionState, MemoryTotalGB, @{n="bDoRowHighlight"; e={if ($_.ConnectionState -ne "Connected") {$true}}}) -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myVMHostReport.htm</code></td>
+</tr>
+<tr>
+<td>
+<a href="myCombinedReport.htm">myCombinedReport.htm</a>, with multiple, separately interactive tables in the body</td>
+<td><code>PS C:\&gt; New-HtmlReport -Title "My Combined Report" -PostContent "&lt;BR /&gt;",(New-PageBodyTableHtml -InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore) -Property Name, FreeSpaceGB, CapacityGB -RoundNumber -PreContent "&lt;H3&gt;Combined report of datastores and clusters&lt;/H3&gt;" | Out-File -Encoding ascii c:\temp\myCombinedReport.htm</code></td>
+</tr>
+</tbody>
+</table>
 
 <p>Note: the CSS and links to resources in these examples are made relative for the purposes of hosting these pages [wherever]. Actual generated reports will use the webserver that you have configured instead of relative paths</p>
       </section>
@@ -54,7 +67,7 @@
       </footer>
     </div>
 
-
+    
 
   </body>
 </html>
