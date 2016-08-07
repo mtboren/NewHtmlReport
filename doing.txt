@@ -1,0 +1,4 @@
+[feat_AddPipelineSupport]
+-add support for accepting objects from pipeline in New-PageBodyTableHtml function
+done:
+-add support for accepting objects from pipeline in New-HtmlReport function
