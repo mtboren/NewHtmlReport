@@ -55,19 +55,22 @@ function New-HtmlReport {
 		## make string of the one or more PreContent strings
 		$strPostContent = if ($PSBoundParameters.ContainsKey("PostContent")) {$PostContent -join "<BR />`n"}
 
-		## an array in which to keep the input object to eventually be used in the end{} scriptblock
-		$arrInputObj = @()
+		## an ArrayList in which to keep the input object to eventually be used in the end{} scriptblock (better data structure than "normal" array in terms of performance for the appending that will occur in the process{} scriptblock, especially as the number of items grows)
+		$arrlInputObj = New-Object -Type System.Collections.ArrayList
 	} ## end begin
 
-	process {$arrInputObj += $InputObject}
+	process {
+		## add this object to the ArrayList, grabbing the returned index value in a variable to never use
+		$oIndexThisAdd = $arrlInputObj.Add($InputObject)
+	} ## end process
 
 	end {
 		$hshParamsForNewPageBodyTable = @{
-			InputObject = $arrInputObj
-			Property = $Property
+			InputObject = $arrlInputObj.GetEnumerator() | Foreach-Object {$_.Item(0)}
 			TableStartHtml = $strTableStartHtml
 			TableFinishHtml = $strTableFinishHtml
 		} ## end hsh
+		if ($PSBoundParameters.ContainsKey("Property")) {$hshParamsForNewPageBodyTable["Property"] = $Property}
 		if ($RoundNumber) {$hshParamsForNewPageBodyTable["RoundNumber"] = $true; $hshParamsForNewPageBodyTable["NumDecimalPlace"] = $NumDecimalPlace}
 
 		## make new object that holds all of the items to be passed to ConvertTo-Html cmdlet (or references to the variables with said info):
@@ -75,7 +78,7 @@ function New-HtmlReport {
 			CssUri = if ($CssUri) {$CssUri} else {$hshConfigItems_NewHtmlReport["CssUri"]}
 			## generate the Pre / Body table / Post content string for the body
 			Body = ($strPreContent, (New-PageBodyTableHtml @hshParamsForNewPageBodyTable), $strPostContent) -join "`n"
-			Head = "<TITLE>$(if ($Title) {$Title} else {$hshConfigItems_NewHtmlReport["TitleHtml"]})</TITLE>`n$($hshConfigItems_NewHtmlReport["HeadHtmlValue_NoTitleTag"])"
+			Head = "<TITLE>$(if ($PSBoundParameters.ContainsKey('Title')) {$Title} else {$hshConfigItems_NewHtmlReport["TitleHtml"]})</TITLE>`n$($hshConfigItems_NewHtmlReport["HeadHtmlValue_NoTitleTag"])"
 		} ## end hsh
 
 		## do the actual ConvertTo-Html, using (splatting) the given hashtable for params
@@ -114,7 +117,7 @@ function New-PageBodyTableHtml {
 	$strDoHighlightPropName = "bDoRowHighlight"
 
 	## the NoteProperties of this input objects, excluding property by given "doHighlight" predefined name (see above)
-	$arrNamesOfPropertiesToUse = if ($Property) {$Property} else {$InputObject | Get-Member -MemberType *Property* | Where-Object {$_.Name -ne $strDoHighlightPropName} | Foreach-Object {$_.Name} | Select-Object -Unique}
+	$arrNamesOfPropertiesToUse = if ($PSBoundParameters.ContainsKey("Property")) {$Property} else {$InputObject | Get-Member -MemberType *Property* | Where-Object {$_.Name -ne $strDoHighlightPropName} | Foreach-Object {$_.Name} | Select-Object -Unique}
 
 	$strTableHeadHtml = @"
 <THEAD>

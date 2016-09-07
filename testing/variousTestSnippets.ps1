@@ -1,0 +1,18 @@
+## some test snippets, for interactive testing for now
+
+## make a new, GUID-named dir so as to avoid any overwrites and name-collisions
+$oTmpDir = New-Item -ItemType Directory -Path "${env:temp}\$(([System.Guid]::NewGuid()).Guid)"
+$strTmpDirFilespec = $oTmpDir.FullName
+
+## make a test report using just the contents of a temp dir with just the given properties (properties will be in property-name alphabetical order, since no -Property value specified to New-HtmlReport)
+$intTestNum = 0
+Get-ChildItem ${env:temp} | Select-Object Mode, LastWriteTime, Length, Name | New-HtmlReport -Title "test HTML report" | Out-File -Encoding utf8 -FilePath $strTmpDirFilespec\testOut${intTestNum}.htm
+
+## make a test report using just the contents of a temp dir with just the given properties, but setting the particular property order by having specified the -Property param to New-HtmlReport
+$intTestNum++
+Get-ChildItem ${env:temp} | New-HtmlReport -Property Mode, LastWriteTime, Length, Name -Title "test HTML report" | Out-File -Encoding utf8 -FilePath $strTmpDirFilespec\testOut${intTestNum}.htm
+
+
+explorer.exe $strTmpDirFilespec
+## clean-up:  remove the temporary directory and its contents
+$oTmpDir | Remove-Item -Recurse
