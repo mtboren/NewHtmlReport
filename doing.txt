@@ -1,4 +1,5 @@
 [feat_AddPipelineSupport]
--add support for accepting objects from pipeline in New-PageBodyTableHtml function
+- add support for accepting objects from pipeline in New-PageBodyTableHtml function
 done:
--add support for accepting objects from pipeline in New-HtmlReport function
+- add support for accepting objects from pipeline in New-HtmlReport function
+- changed scope of config items (like `$hshConfigItems_NewHtmlReport`) -- by moving from `ScriptsToProcess` to `NestedModules` in .psd1; verified -- `NestedModules` is available in PowerShell v2

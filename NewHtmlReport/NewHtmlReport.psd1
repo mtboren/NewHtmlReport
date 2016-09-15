@@ -54,7 +54,7 @@ PowerShellVersion = '2.0'
 # RequiredAssemblies = @()
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-ScriptsToProcess = 'New-HtmlReport_configItems.ps1'
+# ScriptsToProcess = ''
 
 # Type files (.ps1xml) to be loaded when importing this module
 # TypesToProcess = @()
@@ -62,8 +62,8 @@ ScriptsToProcess = 'New-HtmlReport_configItems.ps1'
 # Format files (.ps1xml) to be loaded when importing this module
 # FormatsToProcess = @()
 
-# Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-# NestedModules = @()
+# Modules to import as nested modules of the module specified in RootModule/ModuleToProcess. Scripts (.ps1) that are listed in the NestedModules key are run in the module's session state
+NestedModules = @('New-HtmlReport_configItems.ps1')
 
 # Functions to export from this module
 FunctionsToExport = '*'

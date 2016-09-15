@@ -144,5 +144,3 @@ function New-PageBodyTableHtml {
 
 
 Export-ModuleMember -Function New-HtmlReport,New-PageBodyTableHtml
-## workaround for PowerShell bug that adds ScriptsToProcess items as a module, which shows up at Get-Module time
-Remove-Module -Name New-HtmlReport_configItems

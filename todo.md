@@ -5,3 +5,16 @@
 - add pipeline support to accept objects from pipeline
 - update tests for parameter usage in functions (instead of `if ($param) {}..`, use `if ($PSBoundParameters.ContainsKey('MyParam')) {}..`)
 - add some sample HTML files (but, with doctored paths to resource files)
+- for `New-HtmlReport` function:  make function to create HTML that uses datasource from JSON
+	- eventually support CSV, XML, or whatevs for data format?
+- set default values for jQuery and TableSorter URLs to be CDN links?
+- add support to New-PageBodyTableHtml to take InputObject from pipeline?
+- add option to make [DataTables](https://datatables.net) table instead of TableSorter:
+	- make HTML
+	- for data, either embed as JSON array in the HTML, or give option to generate JSON from input objects
+		- if "generate JSON", take JSON path param (and JSON URL, if that exposes JSON on a web server or something, like if the JSON file path is not relative to current HTML doc being generated)
+		- explain subsequent use can just be, ``$arrMyObjects | ConvertTo-Json | Out-File -Encoding utf8 .\some\path\data.json` to "refresh" data and without need to employ `New-HtmlReport`
+	- for DataTables search box, add JS that will clear search box when `ESC` key is pressed with focus in search box
+	- add additional config items for:
+		- DataTables JS, CSS URLs
+	- ?include .css that overrides the sorting icon PNGs from default DataTables CSS -- need a way to enable/disable that, if not using default DataTables CSS (else would override people's customized/local DataTables CSS)
