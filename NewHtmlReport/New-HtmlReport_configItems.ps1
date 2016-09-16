@@ -34,7 +34,7 @@ $strDefaultTitleHtml = "Reporting Info"
 
 
 ## hashtable of default values for config items
-$global:hshConfigItems_NewHtmlReport = @{
+$hshConfigItems_NewHtmlReport = @{
 	CssUri = $strDefaultCssUri
 	HeadHtmlValue_NoTitleTag = $strDefaultHeadHtml
 	TitleHtml = $strDefaultTitleHtml
