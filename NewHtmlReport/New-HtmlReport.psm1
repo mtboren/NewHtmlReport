@@ -143,4 +143,51 @@ function New-PageBodyTableHtml {
 } ## end function
 
 
-Export-ModuleMember -Function New-HtmlReport,New-PageBodyTableHtml
+
+function Get-NewHtmlReportConfiguration {
+	param(
+		## The scope from which to get the NewHtmlReport configuration:  AllUsers or Session, where Session is just the volatile set of setting that exist in _this_ PowerShell session. If not specified, all scopes' configurations are returned
+		[ValidateSet("AllUsers", "Session")][String]$Scope = "AllUsers"
+	) ## end param
+	process {
+		Switch ($Scope) {
+			"AllUsers" {
+				## $strNewHtmlReportCfgJsonFilespec is a module-private string variable, defined in New-HtmlReport_configItems.ps1
+				Get-Content -Path $strNewHtmlReportCfgJsonFilespec | Out-String | ConvertFrom-Json
+				break
+			} ## end case
+			"Session" {
+				return $oNewHtmlReportConfiguration_current
+			} ## end case
+		} ## end switch
+	} ## end process
+} ## end function
+
+
+function Set-NewHtmlReportConfiguration {
+	param(
+		## The scope for which to save this configuration setting. AllUsers writes configuration update to the module directory, Session only updates the configuration in the current PowerShell session
+		[ValidateSet("AllUsers", "Session")][String]$Scope = "AllUsers",
+		## URL at which resides the jquery.js variant to use
+		[String]$jQueryURL
+	)
+	process {
+		$PSBoundParameters.Keys | Where-Object {$_ -ne "Scope"} | Foreach-Object {
+			$strThisParamName = $_
+			$oNewHtmlReportConfiguration_current.$strThisParamName = $PSBoundParameters[$strThisParamName]
+		} ## end foreach-object
+
+		if ($Scope -eq "AllUsers") {$oNewHtmlReportConfiguration_current.$strThisParamName | Convertto-Json | Out-File -Encoding utf8 -Path $strNewHtmlReportCfgJsonFilespec}
+
+		return $oNewHtmlReportConfiguration_current
+	} ## end process
+} ## end function
+
+## if the NewHtmlReport config is not already present (say, from the module having been loaded in this session once before), load the configuration from disk
+#   the purpose of this check is to not overwrite the configuration in the current session; important in the case that someone set a session-specific config item for the module, and then reloaded the module
+if (-not (Get-Variable -Name oNewHtmlReportConfiguration_current -ErrorAction:SilentlyContinue)) {
+	$oNewHtmlReportConfiguration_current = Get-NewHtmlReportConfiguration -Scope AllUsers
+} ## end if
+else {Write-Verbose "[NewHtmlReport init] Configuration already loaded in session -- not reloading from disk"}
+
+Export-ModuleMember -Function New-HtmlReport, New-PageBodyTableHtml, Get-NewHtmlReportConfiguration, Set-NewHtmlReportConfiguration

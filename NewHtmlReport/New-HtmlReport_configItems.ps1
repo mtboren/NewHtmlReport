@@ -40,3 +40,5 @@ $hshConfigItems_NewHtmlReport = @{
 	TitleHtml = $strDefaultTitleHtml
 	SortableTableCssClass = $strSortableTableCssClass
 } ## end hsh
+
+$strNewHtmlReportCfgJsonFilespec = "$PSScriptRoot\New-HtmlReport_config_stored.json"

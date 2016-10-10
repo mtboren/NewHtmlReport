@@ -2,3 +2,12 @@
 done:
 - added support for accepting objects from pipeline in New-HtmlReport function
 - changed scope of config items (like `$hshConfigItems_NewHtmlReport`) -- by moving from `ScriptsToProcess` to `NestedModules` in .psd1; verified -- `NestedModules` is available in PowerShell v2
+
+[feat_AddCfgCmdlet]
+- add ability to manage module configuration via cmdlet in module, instead of requiring user to manually edit configuration file in module directory
+  - by leveraging JSON-based configs file, and new `Get-HtmlReportConfiguration` and `Set-HtmlReportConfiguration` cmdlets?
+  - allow for scope of setting:  (Session, AllUsers), or (Process, AllUsers), or?
+  	- if not already loaded at module import time (say, from previous module import), reads from disk; else, does not disturb the config that is already defined in the session
+  	- need to store (in var) and return both AllUsers and Session scopes' configuration via Get-NewHtmlReportConfiguration
+  - need to consider how to not change this at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
+  - remove the global $str* variables currently in use by module (put them into the `hshConfigItems` hashtable)
