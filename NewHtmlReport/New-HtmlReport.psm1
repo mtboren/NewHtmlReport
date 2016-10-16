@@ -145,48 +145,78 @@ function New-PageBodyTableHtml {
 
 
 function Get-NewHtmlReportConfiguration {
+	[CmdletBinding()]
 	param(
 		## The scope from which to get the NewHtmlReport configuration:  AllUsers or Session, where Session is just the volatile set of setting that exist in _this_ PowerShell session. If not specified, all scopes' configurations are returned
-		[ValidateSet("AllUsers", "Session")][String]$Scope = "AllUsers"
+		[ValidateSet("AllUsers", "Session")][String[]]$Scope
 	) ## end param
+
 	process {
-		Switch ($Scope) {
-			"AllUsers" {
-				## $strNewHtmlReportCfgJsonFilespec is a module-private string variable, defined in New-HtmlReport_configItems.ps1
-				Get-Content -Path $strNewHtmlReportCfgJsonFilespec | Out-String | ConvertFrom-Json
-				break
-			} ## end case
-			"Session" {
-				return $oNewHtmlReportConfiguration_current
-			} ## end case
-		} ## end switch
+		## $strNewHtmlReportCfgJsonFilespec is a module-private string variable, defined in New-HtmlReport_configItems.ps1
+		if (-not (Get-Variable -Name "arrNewHtmlReportConfigs_current")) {
+			Write-Verbose "script-scope var 'arrNewHtmlReportConfigs_current' not present, yet -- creating now"
+			## get the JSON text from the given filespec, to be used to return objects containing configuration information
+			$strTmpCurrentCfgJsonTxtFromDisk = Get-Content -Path $strNewHtmlReportCfgJsonFilespec | Out-String
+			## add objects to array of current configs, one for each scope
+			$script:arrNewHtmlReportConfigs_current = "AllUsers","Session" | Foreach-Object {
+				$strThisScopeName = $_
+				$oCurrentCfgFromJson = $strTmpCurrentCfgJsonTxtFromDisk | ConvertFrom-Json
+				$oCurrentCfgFromJson."Scope" = $strThisScopeName
+				$oCurrentCfgFromJson
+			} ## end foreach-object
+		} ## end if
+
+		## if a particular scope is desired, return just it
+		if ($PSBoundParameters.ContainsKey("Scope")) {return ($script:arrNewHtmlReportConfigs_current | Where-Object {$Scope -contains $_.Scope})}
+		else {return $script:arrNewHtmlReportConfigs_current}
 	} ## end process
 } ## end function
 
 
+
 function Set-NewHtmlReportConfiguration {
+	[CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact="High")]
 	param(
-		## The scope for which to save this configuration setting. AllUsers writes configuration update to the module directory, Session only updates the configuration in the current PowerShell session
-		[ValidateSet("AllUsers", "Session")][String]$Scope = "AllUsers",
+		## The scope for which to save this configuration setting. AllUsers writes configuration update to the module directory, Session only updates the configuration in the current PowerShell session. If not specified, only "Session" configuration is changed
+		[ValidateSet("AllUsers", "Session")][String[]]$Scope = "Session",
 		## URL at which resides the jquery.js variant to use
-		[String]$jQueryURL
-	)
+		[ValidateNotNullOrEmpty()][String]$jQueryURL
+	) ## end param
+
+	begin {
+		## the Configuration settings' parameter names to check/use
+		$arrPossibleConfigSettingNames = "jQueryURL"
+	} ## end begin
+
 	process {
-		$PSBoundParameters.Keys | Where-Object {$_ -ne "Scope"} | Foreach-Object {
-			$strThisParamName = $_
-			$oNewHtmlReportConfiguration_current.$strThisParamName = $PSBoundParameters[$strThisParamName]
-		} ## end foreach-object
+		$arrNamesOfSettingsToUpdate = $PSBoundParameters.Keys | Where-Object {$arrPossibleConfigSettingNames -contains $_}
+		$strMessageForShouldProcess = "Update {0} setting{1}" -f $arrNamesOfSettingsToUpdate.Count, $(if (($arrNamesOfSettingsToUpdate | Measure-Object).Count -gt 1) {"s"})
+		$strTargetForShouldProcess = "{0} scope{1}" -f $($Scope -join ", "), $(if (($Scope | Measure-Object).Count -gt 1) {"s"})
+		if ($PSCmdlet.ShouldProcess($strTargetForShouldProcess, $strMessageForShouldProcess)) {
+			## do the actual setting of values
+			$arrNamesOfSettingsToUpdate | Foreach-Object {
+				## the configuration item name to set
+				$strThisParamName = $_
+				## for the configuration objects of the given scope(s), set the given config property to the specified value
+				$script:arrNewHtmlReportConfigs_current | Where-Object {$Scope -contains $_.Scope} | Foreach-Object {$_.$strThisParamName = $PSBoundParameters[$strThisParamName]}
+			} ## end foreach-object
 
-		if ($Scope -eq "AllUsers") {$oNewHtmlReportConfiguration_current.$strThisParamName | Convertto-Json | Out-File -Encoding utf8 -Path $strNewHtmlReportCfgJsonFilespec}
+			## if the AllUsers scope is included in this set, write out the configuration to disks
+			if ($Scope -contains "AllUsers") {
+				Write-Verbose "writing updated AllUsers configuration to persistence data file at '$strNewHtmlReportCfgJsonFilespec'"
+				$script:arrNewHtmlReportConfigs_current | Where-Object {$_.Scope -eq "AllUsers"} | Convertto-Json | Out-File -Encoding utf8 -FilePath $strNewHtmlReportCfgJsonFilespec
+			} ## end if
 
-		return $oNewHtmlReportConfiguration_current
+			## return the updated in-memory configurations
+			return $script:arrNewHtmlReportConfigs_current
+		} ## end if
 	} ## end process
 } ## end function
 
 ## if the NewHtmlReport config is not already present (say, from the module having been loaded in this session once before), load the configuration from disk
 #   the purpose of this check is to not overwrite the configuration in the current session; important in the case that someone set a session-specific config item for the module, and then reloaded the module
-if (-not (Get-Variable -Name oNewHtmlReportConfiguration_current -ErrorAction:SilentlyContinue)) {
-	$oNewHtmlReportConfiguration_current = Get-NewHtmlReportConfiguration -Scope AllUsers
+if (-not (Get-Variable -Name arrNewHtmlReportConfigs_current -ErrorAction:SilentlyContinue)) {
+	Get-NewHtmlReportConfiguration -Verbose | Out-Null
 } ## end if
 else {Write-Verbose "[NewHtmlReport init] Configuration already loaded in session -- not reloading from disk"}
 

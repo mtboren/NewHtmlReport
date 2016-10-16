@@ -9,5 +9,15 @@ done:
   - allow for scope of setting:  (Session, AllUsers), or (Process, AllUsers), or?
   	- if not already loaded at module import time (say, from previous module import), reads from disk; else, does not disturb the config that is already defined in the session
   	- need to store (in var) and return both AllUsers and Session scopes' configuration via Get-NewHtmlReportConfiguration
+  	-expected behavior
+  		-invoke Get-Cfg at module load, creating module-private variable
+		-Get-Cfg:
+  			-stores those in module-private variable
+  			-if said variable not defined:  AllUsers and Session are the same, are read from json, and variable is defined, and they are returned (two objects)
+  			-else, return said variable
+  		-Set-Cfg:
+  			-set values in proper scope
+  			-if scope is AllUsers, export to json
+  		-cmdlets in module use private-variable's Session cfg
   - need to consider how to not change this at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
   - remove the global $str* variables currently in use by module (put them into the `hshConfigItems` hashtable)
