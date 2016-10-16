@@ -144,8 +144,20 @@ function New-PageBodyTableHtml {
 
 
 
+<#	.Description
+	Function to get the current configuration for the NewHtmlReport module
+	.Example
+	Get-NewHtmlReportConfiguration
+	Gets the current configuration (all scopes) for the NewHtmlReport module
+	.Example
+	Get-NewHtmlReportConfiguration
+	Gets the current configuration for the Session scope for the NewHtmlReport module
+	.Outputs
+	PSCustomObject
+#>
 function Get-NewHtmlReportConfiguration {
 	[CmdletBinding()]
+	[OutputType([System.Management.Automation.PSCustomObject])]
 	param(
 		## The scope from which to get the NewHtmlReport configuration:  AllUsers or Session, where Session is just the volatile set of setting that exist in _this_ PowerShell session. If not specified, all scopes' configurations are returned
 		[ValidateSet("AllUsers", "Session")][String[]]$Scope
@@ -153,7 +165,7 @@ function Get-NewHtmlReportConfiguration {
 
 	process {
 		## $strNewHtmlReportCfgJsonFilespec is a module-private string variable, defined in New-HtmlReport_configItems.ps1
-		if (-not (Get-Variable -Name "arrNewHtmlReportConfigs_current")) {
+		if (-not (Get-Variable -Name "arrNewHtmlReportConfigs_current" -ErrorAction:SilentlyContinue)) {
 			Write-Verbose "script-scope var 'arrNewHtmlReportConfigs_current' not present, yet -- creating now"
 			## get the JSON text from the given filespec, to be used to return objects containing configuration information
 			$strTmpCurrentCfgJsonTxtFromDisk = Get-Content -Path $strNewHtmlReportCfgJsonFilespec | Out-String
@@ -174,8 +186,20 @@ function Get-NewHtmlReportConfiguration {
 
 
 
+<#	.Description
+	Function to set the configuration option(s) for the given scope(s) for the NewHtmlReport module
+	.Example
+	Set-NewHtmlReportConfiguration -Scope AllUsers -jQueryURL https://googs.com/js/jQ/v1.10/jquery.min.js
+	Sets the jQueryURL configuration item value for the AllUsers scope (does not affect current session setting)
+	.Example
+	Set-NewHtmlReportConfiguration -jQueryURL https://googs.com/js/jQ/v1.10/jquery.min.js
+	Sets the jQueryURL configuration item value for the current PowerShell Session's scope (persists in the current PowerShell session, except if this PowerShell module is re-imported with the -Force parameter)
+	.Outputs
+	PSCustomObject
+#>
 function Set-NewHtmlReportConfiguration {
 	[CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact="High")]
+	[OutputType([System.Management.Automation.PSCustomObject])]
 	param(
 		## The scope for which to save this configuration setting. AllUsers writes configuration update to the module directory, Session only updates the configuration in the current PowerShell session. If not specified, only "Session" configuration is changed
 		[ValidateSet("AllUsers", "Session")][String[]]$Scope = "Session",
@@ -213,10 +237,12 @@ function Set-NewHtmlReportConfiguration {
 	} ## end process
 } ## end function
 
+
+## Initialization
 ## if the NewHtmlReport config is not already present (say, from the module having been loaded in this session once before), load the configuration from disk
 #   the purpose of this check is to not overwrite the configuration in the current session; important in the case that someone set a session-specific config item for the module, and then reloaded the module
 if (-not (Get-Variable -Name arrNewHtmlReportConfigs_current -ErrorAction:SilentlyContinue)) {
-	Get-NewHtmlReportConfiguration -Verbose | Out-Null
+	Get-NewHtmlReportConfiguration | Out-Null
 } ## end if
 else {Write-Verbose "[NewHtmlReport init] Configuration already loaded in session -- not reloading from disk"}
 
