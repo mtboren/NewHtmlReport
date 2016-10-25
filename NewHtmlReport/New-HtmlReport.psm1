@@ -164,18 +164,11 @@ function Get-NewHtmlReportConfiguration {
 	) ## end param
 
 	process {
-		## $strNewHtmlReportCfgJsonFilespec is a module-private string variable, defined in New-HtmlReport_configItems.ps1
+		## $hshInternalConfigItems_NewHtmlReport is a module-private variable with module-specific configuration information, defined in New-HtmlReport_configItems.ps1
 		if (-not (Get-Variable -Name "arrNewHtmlReportConfigs_current" -ErrorAction:SilentlyContinue)) {
 			Write-Verbose "script-scope var 'arrNewHtmlReportConfigs_current' not present, yet -- creating now"
-			## get the JSON text from the given filespec, to be used to return objects containing configuration information
-			$strTmpCurrentCfgJsonTxtFromDisk = Get-Content -Path $strNewHtmlReportCfgJsonFilespec | Out-String
-			## add objects to array of current configs, one for each scope
-			$script:arrNewHtmlReportConfigs_current = "AllUsers","Session" | Foreach-Object {
-				$strThisScopeName = $_
-				$oCurrentCfgFromJson = $strTmpCurrentCfgJsonTxtFromDisk | ConvertFrom-Json
-				$oCurrentCfgFromJson."Scope" = $strThisScopeName
-				$oCurrentCfgFromJson
-			} ## end foreach-object
+			## get the configuration from the given, "persistent configuration" JSON filespec
+			$script:arrNewHtmlReportConfigs_current = _Get-NewHtmlConfigFromJsonFile -JsonFilespec $script:hshInternalConfigItems_NewHtmlReport["ModCfgJsonFilespec"]
 		} ## end if
 
 		## if a particular scope is desired, return just it
@@ -184,6 +177,27 @@ function Get-NewHtmlReportConfiguration {
 	} ## end process
 } ## end function
 
+
+<#	.Description
+	Internal helper function for getting the configuration from a given JSON filespec
+#>
+function _Get-NewHtmlConfigFromJsonFile {
+	param(
+		## Full path to JSON file that holds configuration data, from which to get the stored config for the module
+		[String]$JsonFilespec
+	) ## end param
+	process {
+		## get the JSON text from the given filespec, to be used to return objects containing configuration information
+		$strTmpCurrentCfgJsonTxtFromDisk = Get-Content -Path $JsonFilespec | Out-String
+		## create objects of current configs, one for each scope
+		"AllUsers","Session" | Foreach-Object {
+			$strThisScopeName = $_
+			$oCurrentCfgFromJson = $strTmpCurrentCfgJsonTxtFromDisk | ConvertFrom-Json
+			$oCurrentCfgFromJson."Scope" = $strThisScopeName
+			$oCurrentCfgFromJson
+		} ## end foreach-object
+	} ## end process
+} ## end internal function
 
 
 <#	.Description
@@ -204,12 +218,15 @@ function Set-NewHtmlReportConfiguration {
 		## The scope for which to save this configuration setting. AllUsers writes configuration update to the module directory, Session only updates the configuration in the current PowerShell session. If not specified, only "Session" configuration is changed
 		[ValidateSet("AllUsers", "Session")][String[]]$Scope = "Session",
 		## URL at which resides the jquery.js variant to use
-		[ValidateNotNullOrEmpty()][String]$jQueryURL
+		[ValidateNotNullOrEmpty()][String]$jQueryURL,
+		## URL at which resides the TableSorter jQuery add-on JS file to use
+		[ValidateNotNullOrEmpty()][String]$jQueryTableSorterURL
+
 	) ## end param
 
 	begin {
 		## the Configuration settings' parameter names to check/use
-		$arrPossibleConfigSettingNames = "jQueryURL"
+		$arrPossibleConfigSettingNames = Write-Output jQueryURL, jQueryTableSorterURL
 	} ## end begin
 
 	process {
@@ -227,8 +244,8 @@ function Set-NewHtmlReportConfiguration {
 
 			## if the AllUsers scope is included in this set, write out the configuration to disks
 			if ($Scope -contains "AllUsers") {
-				Write-Verbose "writing updated AllUsers configuration to persistence data file at '$strNewHtmlReportCfgJsonFilespec'"
-				$script:arrNewHtmlReportConfigs_current | Where-Object {$_.Scope -eq "AllUsers"} | Convertto-Json | Out-File -Encoding utf8 -FilePath $strNewHtmlReportCfgJsonFilespec
+				Write-Verbose "writing updated AllUsers configuration to persistence data file at '$($script:hshInternalConfigItems_NewHtmlReport["ModCfgJsonFilespec"])'"
+				$script:arrNewHtmlReportConfigs_current | Where-Object {$_.Scope -eq "AllUsers"} | Convertto-Json | Out-File -Encoding utf8 -FilePath $script:hshInternalConfigItems_NewHtmlReport["ModCfgJsonFilespec"]
 			} ## end if
 
 			## return the updated in-memory configurations
@@ -236,6 +253,34 @@ function Set-NewHtmlReportConfiguration {
 		} ## end if
 	} ## end process
 } ## end function
+
+
+<#	.Description
+	Function to get the reset the current configurations for all scopes for the NewHtmlReport module to the original values that were the defaults that came with the module itself. This overwrites any customized module settings with the orignal, "factory default" values.
+	.Example
+	Reset-NewHtmlReportConfiguration
+	Resets to "factory defaults" the configuration (all scopes) for the NewHtmlReport module
+	.Outputs
+	PSCustomObject
+#>
+function Reset-NewHtmlReportConfiguration {
+	[CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact="High")]
+	[OutputType([System.Management.Automation.PSCustomObject])]
+	param() ## end param
+
+	process {
+		## messages for ShouldProcess
+		$strTargetForShouldProcess = "All module configuration options"
+		$strMessageForShouldProcess = "Reset to their original, 'factory default' values"
+		if ($PSCmdlet.ShouldProcess($strTargetForShouldProcess, $strMessageForShouldProcess)) {
+			## get the configuration from the given, "_original_ configuration" JSON filespec
+			$script:arrNewHtmlReportConfigs_current = _Get-NewHtmlConfigFromJsonFile -JsonFilespec $script:hshInternalConfigItems_NewHtmlReport["ModCfg_originalDefaults_JsonFilespec"]
+			## then, write the configuration to the "current config" destination
+			Set-NewHtmlReportConfiguration -Confirm:$false -Scope AllUsers
+		} ## end if
+	} ## end process
+} ## end function
+
 
 
 ## Initialization
@@ -246,4 +291,4 @@ if (-not (Get-Variable -Name arrNewHtmlReportConfigs_current -ErrorAction:Silent
 } ## end if
 else {Write-Verbose "[NewHtmlReport init] Configuration already loaded in session -- not reloading from disk"}
 
-Export-ModuleMember -Function New-HtmlReport, New-PageBodyTableHtml, Get-NewHtmlReportConfiguration, Set-NewHtmlReportConfiguration
+Export-ModuleMember -Function New-HtmlReport, New-PageBodyTableHtml, Get-NewHtmlReportConfiguration, Reset-NewHtmlReportConfiguration, Set-NewHtmlReportConfiguration

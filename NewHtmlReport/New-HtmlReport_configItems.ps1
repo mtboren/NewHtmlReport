@@ -41,4 +41,9 @@ $hshConfigItems_NewHtmlReport = @{
 	SortableTableCssClass = $strSortableTableCssClass
 } ## end hsh
 
-$strNewHtmlReportCfgJsonFilespec = "$PSScriptRoot\New-HtmlReport_config_stored.json"
+## hashtable of internal configuration items for this module
+$hshInternalConfigItems_NewHtmlReport = @{
+	## filespecs of the module's stored configurations' files (current and module default (for resets))
+	ModCfgJsonFilespec = "$PSScriptRoot\New-HtmlReport_config_stored.json"
+	ModCfg_originalDefaults_JsonFilespec = "$PSScriptRoot\New-HtmlReport_config_stored_default.json"
+} ## end hsh
