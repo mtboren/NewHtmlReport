@@ -1,7 +1,7 @@
 [feat_AddPipelineSupport]
 done:
-- added support for accepting objects from pipeline in New-HtmlReport function
-- changed scope of config items (like `$hshConfigItems_NewHtmlReport`) -- by moving from `ScriptsToProcess` to `NestedModules` in .psd1; verified -- `NestedModules` is available in PowerShell v2
+- added support for accepting objects from pipeline in `New-HtmlReport` function
+- changed scope of 'static' config items -- by moving from `ScriptsToProcess` to `NestedModules` in .psd1; verified -- `NestedModules` is available in PowerShell v2
 
 [feat_AddCfgCmdlet]
 - add ability to manage module configuration via cmdlet in module, instead of requiring user to manually edit configuration file in module directory
@@ -24,3 +24,6 @@ done:
   - if any still exist, remove the global $str* variables currently in use by module (put them into the module-wide configuration store)
   - need to eventually have something that will reset config values to "default" values (as kept in separate, "default" configs .json file?)
   - will .js and .css from CDNs work for all for datatables.net?  Like, imgs and whatnot? Or, need .css overrides for PNGs for when default CDN .css is in use?
+
+
+RIGHT NOW:  finish clean up of old $hsh and old $str* items in C:\temp\GitThings\NewHtmlReport\NewHtmlReport\NewHtmlReport_configItems.ps1

@@ -17,6 +17,7 @@
 
 		`<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>`
     `<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>`
+    - ?add options to set Tablesort theme (as shown to be available at https://mottie.github.io/tablesorter/docs/themes.html); do so via TablesorterThemeName type of enumerated config option, which updates the table class and somehow the .CSS file?
 - add option to make [DataTables](https://datatables.net) table instead of TableSorter:
 	- make the HTML that will support/enable such tables
 	- for data, either embed as JSON array in the HTML, or give option to generate JSON from input objects

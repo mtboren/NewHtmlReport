@@ -12,8 +12,7 @@ Get-ChildItem ${env:temp} | Select-Object Mode, LastWriteTime, Length, Name | Ne
 
 ## make a test report using just the contents of a temp dir with just the given properties, but setting the particular property order by having specified the -Property param to New-HtmlReport
 $intTestNum++
-Get-ChildItem ${env:temp} | New-HtmlReport -Property Mode, LastWriteTime, Length, Name -Title "test HTML report" | Out-File -Encoding utf8 -FilePath $strTmpDirFilespec\testOut${intTestNum}.htm
-
+Get-ChildItem ${env:temp} | New-HtmlReport -PreContent "<H3>Sweet report -- objects from pipeline</H3>" -Property Mode, LastWriteTime, Length, Name -Title "objects from pipeline test HTML report" | Out-File -Encoding utf8 -FilePath $strTmpDirFilespec\testOut${intTestNum}.htm
 
 explorer.exe $strTmpDirFilespec
 ## clean-up:  remove the temporary directory and its contents

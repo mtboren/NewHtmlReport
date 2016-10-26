@@ -36,17 +36,21 @@ function New-HtmlReport {
 	) ## end param
 
 	begin {
-		## the ModuleManifest, via ScriptsToProcess, "imports" the default values from the given config file <thisModuleDir>\New-HtmlReport_configItems.ps1
-		<# values that were imported from the default values file:  $hshConfigItems_NewHtmlReport with keys:
-			CssUri
-			HeadHtmlValue_NoTitleTag
+		## the current Session configuration items
+		$oCurrentSessionModuleConfig = Get-NewHtmlReportConfiguration -Scope Session
+
+		## the ModuleManifest, via ScriptsToProcess, "imports" the default values from the given config file <thisModuleDir>\NewHtmlReport_configItems.ps1
+		<# values that were imported from the default values file:  $hshInternalConfigItems_NewHtmlReport with keys:
+			TablesorterHeadScriptblock
 			TitleHtml
-			SortableTableCssClass
+			TablesorterTableCssClass
 		#>
-		## the start of the TABLE HTML
-		$strTableStartHtml = "`n<TABLE CLASS='$($hshConfigItems_NewHtmlReport["SortableTableCssClass"])'>"
-		## add caption tag to table, if given param is not $null
-		if ($null -ne $TableCaption) {$strTableStartHtml += "`n<CAPTION CLASS='tblCaption'>$TableCaption</CAPTION>"}
+		## the JS script blocks for including appropriate table-sorting libraries, to be used in the HEAD HTML tag
+		$strTableSortingJSScriptblocksForHead = ("jQueryURI", "jQueryTableSorterURI" | Foreach-Object {"<script type='text/javascript' src='$($oCurrentSessionModuleConfig.$_)'></script>"}) -join "`n"
+
+		## the start of the TABLE HTML tag, and with caption tag if given param is not $null or empty
+		$strTableStartHtml = "`n<TABLE CLASS='$($hshInternalConfigItems_NewHtmlReport['TablesorterTableCssClass'])'>{0}" -f $(if (-not [System.String]::IsNullOrEmpty($TableCaption)) {"`n<CAPTION CLASS='tblCaption'>$TableCaption</CAPTION>"})
+
 		## the finish of the TABLE HTML
 		$strTableFinishHtml = "</TABLE>"
 
@@ -73,12 +77,14 @@ function New-HtmlReport {
 		if ($PSBoundParameters.ContainsKey("Property")) {$hshParamsForNewPageBodyTable["Property"] = $Property}
 		if ($RoundNumber) {$hshParamsForNewPageBodyTable["RoundNumber"] = $true; $hshParamsForNewPageBodyTable["NumDecimalPlace"] = $NumDecimalPlace}
 
+
 		## make new object that holds all of the items to be passed to ConvertTo-Html cmdlet (or references to the variables with said info):
 		$hshConfigForConverttoHtml = @{
-			CssUri = if ($CssUri) {$CssUri} else {$hshConfigItems_NewHtmlReport["CssUri"]}
+			CssUri = if ($CssUri) {$CssUri} else {$oCurrentSessionModuleConfig.TableSorterCssURI}
 			## generate the Pre / Body table / Post content string for the body
 			Body = ($strPreContent, (New-PageBodyTableHtml @hshParamsForNewPageBodyTable), $strPostContent) -join "`n"
-			Head = "<TITLE>$(if ($PSBoundParameters.ContainsKey('Title')) {$Title} else {$hshConfigItems_NewHtmlReport["TitleHtml"]})</TITLE>`n$($hshConfigItems_NewHtmlReport["HeadHtmlValue_NoTitleTag"])"
+			## the HEAD HTML tag, with TITLE and any JS scriptblocks
+			Head = "<TITLE>{0}</TITLE>`n{1}`n{2}" -f $(if ($PSBoundParameters.ContainsKey("Title")) {$Title} else {$oCurrentSessionModuleConfig.DefaultReportTitleHtml}), $strTableSortingJSScriptblocksForHead, $($hshInternalConfigItems_NewHtmlReport["TablesorterHeadScriptblock"])
 		} ## end hsh
 
 		## do the actual ConvertTo-Html, using (splatting) the given hashtable for params
@@ -104,7 +110,7 @@ function New-PageBodyTableHtml {
 		## The properties of the input object(s) to use in the output; if none specified, all of the object's properties are output
 		[string[]]$Property,
 		## The starting HTML to use for the table
-		[string]$TableStartHtml = "`n<TABLE CLASS='$($hshConfigItems_NewHtmlReport["SortableTableCssClass"])'>",
+		[string]$TableStartHtml = "`n<TABLE CLASS='$($hshInternalConfigItems_NewHtmlReport["TablesorterTableCssClass"])'>",
 		## The ending HTML to use for the table
 		[string]$TableFinishHtml = "</TABLE>",
 		## Switch:  Round numbers to sum number of decimal places?
@@ -203,11 +209,11 @@ function _Get-NewHtmlConfigFromJsonFile {
 <#	.Description
 	Function to set the configuration option(s) for the given scope(s) for the NewHtmlReport module
 	.Example
-	Set-NewHtmlReportConfiguration -Scope AllUsers -jQueryURL https://googs.com/js/jQ/v1.10/jquery.min.js
-	Sets the jQueryURL configuration item value for the AllUsers scope (does not affect current session setting)
+	Set-NewHtmlReportConfiguration -Scope AllUsers -jQueryURI https://googs.com/js/jQ/v1.10/jquery.min.js
+	Sets the jQueryURI configuration item value for the AllUsers scope (does not affect current session setting)
 	.Example
-	Set-NewHtmlReportConfiguration -jQueryURL https://googs.com/js/jQ/v1.10/jquery.min.js
-	Sets the jQueryURL configuration item value for the current PowerShell Session's scope (persists in the current PowerShell session, except if this PowerShell module is re-imported with the -Force parameter)
+	Set-NewHtmlReportConfiguration -jQueryURI https://googs.com/js/jQ/v1.10/jquery.min.js
+	Sets the jQueryURI configuration item value for the current PowerShell Session's scope (persists in the current PowerShell session, except if this PowerShell module is re-imported with the -Force parameter)
 	.Outputs
 	PSCustomObject
 #>
@@ -217,16 +223,19 @@ function Set-NewHtmlReportConfiguration {
 	param(
 		## The scope for which to save this configuration setting. AllUsers writes configuration update to the module directory, Session only updates the configuration in the current PowerShell session. If not specified, only "Session" configuration is changed
 		[ValidateSet("AllUsers", "Session")][String[]]$Scope = "Session",
-		## URL at which resides the jquery.js variant to use
-		[ValidateNotNullOrEmpty()][String]$jQueryURL,
-		## URL at which resides the TableSorter jQuery add-on JS file to use
-		[ValidateNotNullOrEmpty()][String]$jQueryTableSorterURL
-
+		## URI at which resides the jquery.js variant to use
+		[ValidateNotNullOrEmpty()][String]$jQueryURI,
+		## URI at which resides the TableSorter jQuery add-on JS file to use
+		[ValidateNotNullOrEmpty()][String]$jQueryTableSorterURI,
+		## URI at which resides the default CSS file to use for this module, if using TableSorter for the table-management in the HTML
+		[ValidateNotNullOrEmpty()][String]$TableSorterCssURI,
+		## The default HTML to put into the TITLE tag for the resulting HTML output, to be used if not overridden by parameters to creating new HTML reports
+		[ValidateNotNullOrEmpty()][String]$DefaultReportTitleHtml
 	) ## end param
 
 	begin {
 		## the Configuration settings' parameter names to check/use
-		$arrPossibleConfigSettingNames = Write-Output jQueryURL, jQueryTableSorterURL
+		$arrPossibleConfigSettingNames = Write-Output jQueryURI, jQueryTableSorterURI, TableSorterCssURI, DefaultReportTitleHtml
 	} ## end begin
 
 	process {
