@@ -5,11 +5,11 @@ done:
 
 [feat_AddCfgCmdlet]
 - add ability to manage module configuration via cmdlet in module, instead of requiring user to manually edit configuration file in module directory
-  - by leveraging JSON-based configs file, and new `Get-HtmlReportConfiguration` and `Set-HtmlReportConfiguration` cmdlets?
-  - allow for scope of setting:  Session, AllUsers
+  - leverages JSON-based configs file, and new cmdlets `Get-NewHtmlReportConfiguration`, and `Set-NewHtmlReportConfiguration`, and `Reset-NewHtmlReportConfiguration`
+  - allows for scope of setting:  Session, AllUsers
   	- if not already loaded at module import time (say, from previous module import), reads from disk; else, does not disturb the config that is already defined in the session
-  	- need to store (in var) and return both AllUsers and Session scopes' configuration via Get-NewHtmlReportConfiguration
-  	- expected behavior
+  	- stores and returns both AllUsers and Session scopes' configuration via Get-NewHtmlReportConfiguration
+  	- behavior:
   		- invoke Get-Cfg at module load, creating module-private variable
 		- Get-Cfg:
   			- stores those in module-private variable
@@ -18,12 +18,14 @@ done:
   		- Set-Cfg:
   			- set values in proper scope
   			- if scope is AllUsers, export to json
+  		- Reset-Cfg:  resets all scopes to the values in the default configs JSON file included with the module, as a "revert to factory settings" kind of option, overwriting the saved configs on disk with the original default values
   		- cmdlets in module use private-variable's Session cfg
-  - need to consider how to not change this at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
-  - then, update cmdlets in module to use the Session-scoped config settings for places where config items are leveraged (replace use of `$hshConfigItems`)
-  - if any still exist, remove the global $str* variables currently in use by module (put them into the module-wide configuration store)
-  - need to eventually have something that will reset config values to "default" values (as kept in separate, "default" configs .json file?)
+  - updated cmdlets in module to use the Session-scoped config settings for places where config items are leveraged (replaced use of `$hshConfigItems`)
+  - removed the $str* variables previously in use by module (put them into the module-wide configuration store)
+
+  - update readme, Set-NewHtmlReportConfiguration and Reset-NewHtmlReportConfiguration help to mention that setting config items for AllUsers scope requires Write rights in the module's directory (so, if using the module from some read-only location, those cmdlets will not be able to update config items in the AllUsers scope)
+  - remove resources\ folder from project, since things are provided via CDN, now?
+  - update about_NewHtmlReport to hold new info about config files and whatnot
+  - update examples in GitHub page for this module
   - will .js and .css from CDNs work for all for datatables.net?  Like, imgs and whatnot? Or, need .css overrides for PNGs for when default CDN .css is in use?
-
-
-RIGHT NOW:  finish clean up of old $hsh and old $str* items in C:\temp\GitThings\NewHtmlReport\NewHtmlReport\NewHtmlReport_configItems.ps1
+  - need to consider how to not change this at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
