@@ -207,12 +207,14 @@ function _Get-NewHtmlConfigFromJsonFile {
 
 
 <#	.Description
-	Function to set the configuration option(s) for the given scope(s) for the NewHtmlReport module
+	Function to set the configuration option(s) for the given scope(s) for the NewHtmlReport module.
+
+	Note:  When updating the configuration for the AllUsers scope, the function expects that the user as which PowerShell is running has Write filesystem rights at the location where this module's files reside -- the AllUser configuration is stored in a JSON file therein.  Else, if the module's files are in some read-only location, the user will only be able to set the configuration in the Session scope (does not write to disk).
 	.Example
-	Set-NewHtmlReportConfiguration -Scope AllUsers -jQueryURI https://googs.com/js/jQ/v1.10/jquery.min.js
+	Set-NewHtmlReportConfiguration -Scope AllUsers -jQueryURI https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
 	Sets the jQueryURI configuration item value for the AllUsers scope (does not affect current session setting)
 	.Example
-	Set-NewHtmlReportConfiguration -jQueryURI https://googs.com/js/jQ/v1.10/jquery.min.js
+	Set-NewHtmlReportConfiguration -jQueryURI https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
 	Sets the jQueryURI configuration item value for the current PowerShell Session's scope (persists in the current PowerShell session, except if this PowerShell module is re-imported with the -Force parameter)
 	.Outputs
 	PSCustomObject
@@ -266,6 +268,8 @@ function Set-NewHtmlReportConfiguration {
 
 <#	.Description
 	Function to get the reset the current configurations for all scopes for the NewHtmlReport module to the original values that were the defaults that came with the module itself. This overwrites any customized module settings with the orignal, "factory default" values.
+
+	Note:  This expects that the user as which PowerShell is running has Write filesystem rights at the location where this module's files reside -- the AllUser configuration is stored in a JSON file therein.
 	.Example
 	Reset-NewHtmlReportConfiguration
 	Resets to "factory defaults" the configuration (all scopes) for the NewHtmlReport module

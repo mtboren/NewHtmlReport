@@ -22,9 +22,15 @@ done:
   		- cmdlets in module use private-variable's Session cfg
   - updated cmdlets in module to use the Session-scoped config settings for places where config items are leveraged (replaced use of `$hshConfigItems`)
   - removed the $str* variables previously in use by module (put them into the module-wide configuration store)
+  - updated readme
+  - update `Set-NewHtmlReportConfiguration` and `Reset-NewHtmlReportConfiguration` help to mention that setting config items for AllUsers scope requires Write rights in the module's directory (so, if using the module from some read-only location, those cmdlets will not be able to update config items in the AllUsers scope)
 
-  - update readme, Set-NewHtmlReportConfiguration and Reset-NewHtmlReportConfiguration help to mention that setting config items for AllUsers scope requires Write rights in the module's directory (so, if using the module from some read-only location, those cmdlets will not be able to update config items in the AllUsers scope)
   - remove resources\ folder from project, since things are provided via CDN, now?
+  - add support for multiple values to CssUri in `New-HtmlReport`
+  - include CSS for page footer class, table TH TRs, etc?  Need to at least include something for "table.tSorter tbody tr.highlightRow td" kind of selector
+  - update tests to include:
+    - one that uses multiple tables in one page
+    - one that uses row-highlighting example
   - update about_NewHtmlReport to hold new info about config files and whatnot
   - update examples in GitHub page for this module
   - will .js and .css from CDNs work for all for datatables.net?  Like, imgs and whatnot? Or, need .css overrides for PNGs for when default CDN .css is in use?

@@ -4,8 +4,8 @@
   - allow for scope of setting:  (Session, AllUsers), or (Process, AllUsers), or?
   - need to consider how to not change this at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
   - remove the global $str* variables currently in use by module (put them into the `hshConfigItems` hashtable)
-- add pipeline support to accept objects from pipeline in New-HtmlReport and maybe New-PageBodyTableHtml
-- add support to New-PageBodyTableHtml to take InputObject from pipeline?
+- add pipeline support to accept objects from pipeline in `New-HtmlReport` and maybe `New-PageBodyTableHtml`
+- add support to `New-PageBodyTableHtml` to take InputObject from pipeline?
 - update tests for parameter usage in functions (instead of `if ($param) {}..`, use `if ($PSBoundParameters.ContainsKey('MyParam')) {}..`)
 - add some sample HTML files (but, with doctored paths to resource files)
 - for `New-HtmlReport` function:  make function to create HTML that uses datasource from JSON
@@ -17,7 +17,7 @@
 
 		`<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>`
     `<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>`
-    - ?add options to set Tablesort theme (as shown to be available at https://mottie.github.io/tablesorter/docs/themes.html); do so via TablesorterThemeName type of enumerated config option, which updates the table class and somehow the .CSS file?
+    - ?add options to set Tablesorter theme (as shown to be available at https://mottie.github.io/tablesorter/docs/themes.html); do so via TablesorterThemeName type of enumerated config option, which updates the table class and somehow the .CSS file?
 - add option to make [DataTables](https://datatables.net) table instead of TableSorter:
 	- make the HTML that will support/enable such tables
 	- for data, either embed as JSON array in the HTML, or give option to generate JSON from input objects
