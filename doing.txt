@@ -26,12 +26,10 @@ done:
   - update `Set-NewHtmlReportConfiguration` and `Reset-NewHtmlReportConfiguration` help to mention that setting config items for AllUsers scope requires Write rights in the module's directory (so, if using the module from some read-only location, those cmdlets will not be able to update config items in the AllUsers scope)
   - updated about_NewHtmlReport to hold new info about config files and whatnot
   - include CSS for page footer class, tbody tr.highlightRow td, etc.
+  - removed resources\ folder from project, since things are provided via CDN, now
 
-  - remove resources\ folder from project, since things are provided via CDN, now?
   - update tests to include:
     - one that uses multiple tables in one page
     - done:
       - one that uses row-highlighting example
   - update examples in GitHub page for this module
-  - will .js and .css from CDNs work for all for datatables.net?  Like, imgs and whatnot? Or, need .css overrides for PNGs for when default CDN .css is in use?
-  - need to consider how to not change this at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
