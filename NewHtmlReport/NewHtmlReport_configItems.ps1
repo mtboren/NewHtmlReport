@@ -17,6 +17,28 @@ $strTablesorterHeadScriptblock = @"
 	`$(document).ready(function() {`$(".$strTablesorterTableCssClass").tablesorter();} );
 </script>
 "@
+
+## small bit of CSS to include by default
+$strHtmlReportDefaultCssBlock = @"
+<style>
+/* for table caption */
+table.$strTablesorterTableCssClass caption.tblCaption {
+	caption-side: bottom;
+	font-size: small;
+	vertical-align: bottom;
+}
+/* for table rows that are to be "highlighted" */
+table.$strTablesorterTableCssClass tbody tr.highlightRow td {color: #FF0000;}
+/* for footer-type info areas */
+.footerInfo {
+	color: #666666;
+	display: block;
+	font-size: 12px;
+	font-style: italic;
+	margin-top: 5px;
+}
+</style>
+"@
 #### end of adjustable-by-consumer config items
 
 

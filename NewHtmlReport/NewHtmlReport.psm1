@@ -18,7 +18,7 @@ function New-HtmlReport {
 		## The Uniform Resource Identifier (URI) of the CSS to apply to the HTML; examples:  "http://myserver.com/mystyle.css" or "/incl/style.css"
 		[string]$CssUri,
 		## Homogenous input objects (all have the same properties defined) from which to make the HTML table in the new report
-		[parameter(ValueFromPipeline=$true, Mandatory=$true)][PSObject[]]$InputObject,
+		[parameter(ValueFromPipeline=$true, Mandatory=$true)][PSObject]$InputObject,
 		## Text/HTML to add after the closing </TABLE> tag
 		[string[]]$PostContent,
 		## Text/HTML to add before the opening <TABLE> tag
@@ -64,13 +64,13 @@ function New-HtmlReport {
 	} ## end begin
 
 	process {
-		## add this object to the ArrayList, grabbing the returned index value in a variable to never use
-		$oIndexThisAdd = $arrlInputObj.Add($InputObject)
+		## add this object to the ArrayList, grabbing the returned index value in a variable to never use; single value in InputObject when taken from pipeline, but potentially multiple when pass explicitly, so need to add each to the arraylist
+		$InputObject | Foreach-Object {$oIndexThisAdd = $arrlInputObj.Add($_)}
 	} ## end process
 
 	end {
 		$hshParamsForNewPageBodyTable = @{
-			InputObject = $arrlInputObj.GetEnumerator() | Foreach-Object {$_.Item(0)}
+			InputObject = $arrlInputObj.GetEnumerator() | Foreach-Object {$_}
 			TableStartHtml = $strTableStartHtml
 			TableFinishHtml = $strTableFinishHtml
 		} ## end hsh
@@ -83,8 +83,8 @@ function New-HtmlReport {
 			CssUri = if ($CssUri) {$CssUri} else {$oCurrentSessionModuleConfig.TableSorterCssURI}
 			## generate the Pre / Body table / Post content string for the body
 			Body = ($strPreContent, (New-PageBodyTableHtml @hshParamsForNewPageBodyTable), $strPostContent) -join "`n"
-			## the HEAD HTML tag, with TITLE and any JS scriptblocks
-			Head = "<TITLE>{0}</TITLE>`n{1}`n{2}" -f $(if ($PSBoundParameters.ContainsKey("Title")) {$Title} else {$oCurrentSessionModuleConfig.DefaultReportTitleHtml}), $strTableSortingJSScriptblocksForHead, $($hshInternalConfigItems_NewHtmlReport["TablesorterHeadScriptblock"])
+			## the HEAD HTML tag, with TITLE and any JS scriptblocks, plus a bit of CSS (from module's configItems file)
+			Head = "<TITLE>{0}</TITLE>`n{1}`n{2}`n{3}" -f $(if ($PSBoundParameters.ContainsKey("Title")) {$Title} else {$oCurrentSessionModuleConfig.DefaultReportTitleHtml}), $strTableSortingJSScriptblocksForHead, $($hshInternalConfigItems_NewHtmlReport["TablesorterHeadScriptblock"]), $strHtmlReportDefaultCssBlock
 		} ## end hsh
 
 		## do the actual ConvertTo-Html, using (splatting) the given hashtable for params

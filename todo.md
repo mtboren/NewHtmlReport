@@ -10,6 +10,7 @@
 - add some sample HTML files (but, with doctored paths to resource files)
 - for `New-HtmlReport` function:  make function to create HTML that uses datasource from JSON
 	- eventually support CSV, XML, or whatevs for data format?
+- add support for multiple values to CssUri in `New-HtmlReport`
 - set default values for jQuery and TableSorter URLs to be CDN links?
 	- allows for instant (no-config) use of module, assuming that an internet connection is in place
 	- make it known to consumer that these are default, if so (for their privacy/internet usage consideration)
@@ -27,3 +28,5 @@
 	- add additional config items for:
 		- DataTables JS, CSS URLs
 	- ?include .css that overrides the sorting icon PNGs from default DataTables CSS -- need a way to enable/disable that, if not using default DataTables CSS (else would override people's customized/local DataTables CSS)
+  - will .js and .css from CDNs work for all for datatables.net?  Like, imgs and whatnot? Or, need .css overrides for PNGs for when default CDN .css is in use?
+- need to consider how to not change this at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
