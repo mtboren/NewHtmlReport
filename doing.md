@@ -10,15 +10,15 @@ done:
   	- if not already loaded at module import time (say, from previous module import), reads from disk; else, does not disturb the config that is already defined in the session
   	- stores and returns both AllUsers and Session scopes' configuration via Get-NewHtmlReportConfiguration
   	- behavior:
-  		- invoke Get-Cfg at module load, creating module-private variable
-		- Get-Cfg:
+  		- invoke Get-NewHtmlReportConfiguration at module load, creating module-private variable
+		- `Get-NewHtmlReportConfiguration`:
   			- stores those in module-private variable
   			- if said variable not defined:  AllUsers and Session are the same, are read from json, and variable is defined, and they are returned (two objects)
   			- else, return said variable
-  		- Set-Cfg:
+  		- `Set-NewHtmlReportConfiguration`:
   			- set values in proper scope
   			- if scope is AllUsers, export to json
-  		- Reset-Cfg:  resets all scopes to the values in the default configs JSON file included with the module, as a "revert to factory settings" kind of option, overwriting the saved configs on disk with the original default values
+  		- `Reset-NewHtmlReportConfiguration`:  resets all scopes to the values in the default configs JSON file included with the module, as a "revert to factory settings" kind of option, overwriting the saved configs on disk with the original default values
   		- cmdlets in module use private-variable's Session cfg
   - updated cmdlets in module to use the Session-scoped config settings for places where config items are leveraged (replaced use of `$hshConfigItems`)
   - removed the $str* variables previously in use by module (put them into the module-wide configuration store)
@@ -27,9 +27,11 @@ done:
   - updated about_NewHtmlReport to hold new info about config files and whatnot
   - include CSS for page footer class, tbody tr.highlightRow td, etc.
   - removed resources\ folder from project, since things are provided via CDN, now
-
-  - update tests to include:
-    - one that uses multiple tables in one page
-    - done:
+  - updated tests to include:
       - one that uses row-highlighting example
+      - one that uses multiple tables in one page
+  - updated changelog
+
+do:
   - update examples in GitHub page for this module
+  - move doing to done

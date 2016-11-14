@@ -22,9 +22,23 @@ $hshParamForNewHtmlReport = @{
 	PostContent = "<SPAN CLASS='footerInfo'>[this is some footerInfo] Generated $(Get-Date -Format 'dd-MMM-yyyy HH:mm:ss \G\M\Tz')</SPAN>"
 	Property = Write-Output Mode, LastWriteTime, Length, Name
 	Title = "$intTestNum) objects from pipeline test HTML report"
-	TableCaption = "[this is the table caption] child items in some folder"
+	TableCaption = "[this is the table caption] child items in folder '`${env:temp}'"
 } ## end hsh
 Get-ChildItem ${env:temp} | New-HtmlReport @hshParamForNewHtmlReport | Out-File -Encoding utf8 -FilePath $strTmpDirFilespec\testOut${intTestNum}.htm
+
+
+## make a test report with multiple tables in the page
+$intTestNum++
+$hshParamForNewHtmlReport = @{
+	InputObject = Get-ChildItem ${env:temp}
+	PreContent = "<H3>Combined report -- multiple tables</H3>"
+	## make second table for the PostContent, which is the "dir" of C:\, highlighting any object that is a Container (folder)
+	PostContent = "<BR />",(New-PageBodyTableHtml -InputObject (Get-ChildItem C:\ | Select-Object Name, Length, LastWriteTime, @{n="bDoRowHighlight"; e={$_.PSIsContainer}})),"<SPAN CLASS='footerInfo'>[this is some footerInfo] Generated $(Get-Date -Format 'dd-MMM-yyyy HH:mm:ss \G\M\Tz')</SPAN>"
+	Property = Write-Output Mode, LastWriteTime, Length, Name
+	Title = "$intTestNum) Combined Report"
+	TableCaption = "[this is the table caption] child items in folder '`${env:temp}'"
+} ## end hsh
+New-HtmlReport @hshParamForNewHtmlReport | Out-File -Encoding utf8 -FilePath $strTmpDirFilespec\testOut${intTestNum}.htm
 
 
 explorer.exe $strTmpDirFilespec
