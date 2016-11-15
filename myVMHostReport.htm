@@ -2,55 +2,65 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <TITLE>My VMHost Report</TITLE>
-<script type="text/javascript" src="resources/scripts/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="resources/scripts/jquery.tablesorter.min.js"></script>
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.min.js'></script>
 <script type="text/javascript">
 	// extend the default setting to always include the zebra widget (which does the alternating row background colors)
 	$.tablesorter.defaults.widgets = ['zebra'];
-	// get the object of class "tSorter" and call the TableSorter() method on it
-	$(document).ready(function() {$(".tSorter").tablesorter();} );
+	// get the object of class "tablesorter-default" and call the TableSorter() method on it
+	$(document).ready(function() {$(".tablesorter-default").tablesorter();} );
 </script>
-<link rel="stylesheet" type="text/css" href="resources/incl/reportingDefault.css" />
+<style>
+/* for table caption */
+table.tablesorter-default caption.tblCaption {
+	caption-side: bottom;
+	font-size: small;
+	vertical-align: bottom;
+}
+/* for table rows that are to be "highlighted" */
+table.tablesorter-default tbody tr.highlightRow td {color: #FF0000;}
+/* for footer-type info areas */
+.footerInfo {
+	color: #666666;
+	display: block;
+	font-size: 12px;
+	font-style: italic;
+	margin-top: 5px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/css/theme.default.min.css" />
 </head><body>
 <H3>VMHosts Info</H3>
 
-<TABLE CLASS='tSorter'>
+<TABLE CLASS='tablesorter-default'>
 <CAPTION CLASS='tblCaption'>highlighted rows are of VMHosts that are not in 'Connected' state</CAPTION>
 <THEAD>
 	<TR><TH>Name</TH> <TH>ConnectionState</TH> <TH>MemoryTotalGB</TH></TR>
 </THEAD>
 <TBODY>
-	<TR><TD>testhost0.dom.com</TD> <TD>Connected</TD> <TD>96</TD></TR>
-	<TR><TD>testhost1.dom.com</TD> <TD>Connected</TD> <TD>96</TD></TR>
-	<TR><TD>testhost2.dom.com</TD> <TD>Connected</TD> <TD>96</TD></TR>
-	<TR><TD>host0.dom.com</TD> <TD>Connected</TD> <TD>384</TD></TR>
-	<TR><TD>host1.dom.com</TD> <TD>Connected</TD> <TD>384</TD></TR>
-	<TR><TD>host2.dom.com</TD> <TD>Connected</TD> <TD>384</TD></TR>
-	<TR><TD>resthost3.dom.com</TD> <TD>Connected</TD> <TD>256</TD></TR>
-	<TR><TD>resthost4.dom.com</TD> <TD>Connected</TD> <TD>240</TD></TR>
-	<TR><TD>newhost0.dom.com</TD> <TD>Connected</TD> <TD>512</TD></TR>
-	<TR CLASS='highlightRow'><TD>test01.dom.com</TD> <TD>NotResponding</TD> <TD>96</TD></TR>
-	<TR CLASS='highlightRow'><TD>test02.dom.com</TD> <TD>NotResponding</TD> <TD>96</TD></TR>
-	<TR><TD>newhost1.dom.com</TD> <TD>Connected</TD> <TD>512</TD></TR>
-	<TR><TD>newhost2.dom.com</TD> <TD>Connected</TD> <TD>512</TD></TR>
-	<TR><TD>resthost0.dom.com</TD> <TD>Connected</TD> <TD>448</TD></TR>
-	<TR><TD>newhost3.dom.com</TD> <TD>Connected</TD> <TD>512</TD></TR>
-	<TR><TD>resthost1.dom.com</TD> <TD>Connected</TD> <TD>144</TD></TR>
-	<TR CLASS='highlightRow'><TD>resthost2.dom.com</TD> <TD>Maintenance</TD> <TD>144</TD></TR>
-	<TR CLASS='highlightRow'><TD>vshost0.dom.com</TD> <TD>Maintenance</TD> <TD>128</TD></TR>
-	<TR CLASS='highlightRow'><TD>vshost1.dom.com</TD> <TD>Maintenance</TD> <TD>128</TD></TR>
-	<TR><TD>oldhost0.dom.com</TD> <TD>Connected</TD> <TD>32</TD></TR>
-	<TR><TD>oldhost1.dom.com</TD> <TD>Connected</TD> <TD>32</TD></TR>
-	<TR><TD>oldhost2.dom.com</TD> <TD>Connected</TD> <TD>32</TD></TR>
-	<TR><TD>vshost2.dom.com</TD> <TD>Connected</TD> <TD>128</TD></TR>
-	<TR><TD>vshost3.dom.com</TD> <TD>Connected</TD> <TD>128</TD></TR>
-	<TR><TD>vshost4.dom.com</TD> <TD>Connected</TD> <TD>128</TD></TR>
-	<TR><TD>vshost5.dom.com</TD> <TD>Connected</TD> <TD>128</TD></TR>
-	<TR><TD>vshost6.dom.com</TD> <TD>Connected</TD> <TD>128</TD></TR>
-	<TR><TD>vshost7.dom.com</TD> <TD>Connected</TD> <TD>128</TD></TR>
+	<TR><TD>newhost01.dom.com</TD> <TD>Connected</TD> <TD>128.0</TD></TR>
+	<TR><TD>testhost01.dom.com</TD> <TD>Connected</TD> <TD>95.9</TD></TR>
+	<TR><TD>testhost02.dom.com</TD> <TD>Connected</TD> <TD>95.9</TD></TR>
+	<TR CLASS='highlightRow'><TD>testhost03.dom.com</TD> <TD>Disconnected</TD> <TD>95.9</TD></TR>
+	<TR><TD>newhost01.dom.com</TD> <TD>Connected</TD> <TD>384.0</TD></TR>
+	<TR><TD>newhost02.dom.com</TD> <TD>Connected</TD> <TD>384.0</TD></TR>
+	<TR><TD>newhost03.dom.com</TD> <TD>Connected</TD> <TD>384.0</TD></TR>
+	<TR><TD>test1002.dom.com</TD> <TD>Connected</TD> <TD>16.0</TD></TR>
+	<TR><TD>test1001.dom.com</TD> <TD>Connected</TD> <TD>16.0</TD></TR>
+	<TR><TD>vshost0.dom.com</TD> <TD>Connected</TD> <TD>256.0</TD></TR>
+	<TR><TD>vshost1.dom.com</TD> <TD>Connected</TD> <TD>256.0</TD></TR>
+	<TR><TD>myhost0.dom.com</TD> <TD>Connected</TD> <TD>512.0</TD></TR>
+	<TR><TD>myhost1.dom.com</TD> <TD>Connected</TD> <TD>512.0</TD></TR>
+	<TR><TD>myhost2.dom.com</TD> <TD>Connected</TD> <TD>512.0</TD></TR>
+	<TR><TD>myhost3.dom.com</TD> <TD>Connected</TD> <TD>448.0</TD></TR>
+	<TR><TD>myhost4.dom.com</TD> <TD>Connected</TD> <TD>512.0</TD></TR>
+	<TR><TD>otherhost0.dom.com</TD> <TD>Connected</TD> <TD>144.0</TD></TR>
+	<TR><TD>otherhost1.dom.com</TD> <TD>Connected</TD> <TD>144.0</TD></TR>
+	<TR CLASS='highlightRow'><TD>dthost0.dom.com</TD> <TD>Maintenance</TD> <TD>128.0</TD></TR>
+	<TR CLASS='highlightRow'><TD>dthost1.dom.com</TD> <TD>Maintenance</TD> <TD>128.0</TD></TR>
 </TBODY>
 </TABLE>
-<SPAN CLASS='footerInfo'>Generated 2015-Dec-13 16:22:55 GMT-5</SPAN>
+<SPAN CLASS='footerInfo'>Generated 2016-Nov-14 19:28:47 GMT-5</SPAN>
 <table>
 </table>
 </body></html>

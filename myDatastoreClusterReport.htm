@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<TITLE>My Combined Report</TITLE>
+<TITLE>My DatastoreCluster Report</TITLE>
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.min.js'></script>
 <script type="text/javascript">
@@ -30,37 +30,29 @@ table.tablesorter-default tbody tr.highlightRow td {color: #FF0000;}
 </style>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/css/theme.default.min.css" />
 </head><body>
-<H3>Combined report of datastores and clusters</H3>
+<H3>DatastoreCluster Info</H3>
 
 <TABLE CLASS='tablesorter-default'>
+<CAPTION CLASS='tblCaption'>highlighted rows are of DatastoreClusters where SdrsAutomationLevel is not 'FullyAutomated'</CAPTION>
 <THEAD>
-	<TR><TH>Name</TH> <TH>FreeSpaceGB</TH> <TH>CapacityGB</TH></TR>
+	<TR><TH>Name</TH> <TH>CapacityTB</TH> <TH>FreeSpaceTB</TH> <TH>SdrsAutomationLevel</TH></TR>
 </THEAD>
 <TBODY>
-	<TR><TD>nas0</TD> <TD>529</TD> <TD>1008</TD></TR>
-	<TR><TD>super.xio01.00</TD> <TD>2361</TD> <TD>10240</TD></TR>
-	<TR><TD>super.xio01.01</TD> <TD>1400</TD> <TD>10240</TD></TR>
-	<TR><TD>super.xio01.02</TD> <TD>2022</TD> <TD>10240</TD></TR>
-	<TR><TD>super.xio01.03</TD> <TD>1945</TD> <TD>10240</TD></TR>
-	<TR><TD>vsanDatastore</TD> <TD>6698</TD> <TD>6706</TD></TR>
-	<TR><TD>nas1</TD> <TD>1506</TD> <TD>2170</TD></TR>
+	<TR CLASS='highlightRow'><TD>somesite0_high</TD> <TD>260.0</TD> <TD>63.3</TD> <TD>Manual</TD></TR>
+	<TR><TD>somesite1_high</TD> <TD>195.0</TD> <TD>8.8</TD> <TD>FullyAutomated</TD></TR>
+	<TR><TD>somesite0_mid</TD> <TD>80.0</TD> <TD>17.7</TD> <TD>FullyAutomated</TD></TR>
+	<TR><TD>somesite0_low</TD> <TD>25.0</TD> <TD>15.6</TD> <TD>FullyAutomated</TD></TR>
+	<TR CLASS='highlightRow'><TD>othersite2_high</TD> <TD>120.0</TD> <TD>26.3</TD> <TD>Manual</TD></TR>
+	<TR CLASS='highlightRow'><TD>othersite2_mid</TD> <TD>2.5</TD> <TD>1.1</TD> <TD>Manual</TD></TR>
+	<TR><TD>othersite2_low</TD> <TD>30.0</TD> <TD>5.9</TD> <TD>FullyAutomated</TD></TR>
+	<TR CLASS='highlightRow'><TD>somesite1_mid</TD> <TD>55.6</TD> <TD>8.0</TD> <TD>Manual</TD></TR>
+	<TR CLASS='highlightRow'><TD>somesite1_low</TD> <TD>7.3</TD> <TD>3.5</TD> <TD>Manual</TD></TR>
+	<TR><TD>elsewhere0</TD> <TD>30.0</TD> <TD>6.3</TD> <TD>FullyAutomated</TD></TR>
+	<TR><TD>elsewhere1</TD> <TD>2.0</TD> <TD>2.0</TD> <TD>FullyAutomated</TD></TR>
+	<TR><TD>elsewhere2</TD> <TD>28.3</TD> <TD>12.1</TD> <TD>FullyAutomated</TD></TR>
 </TBODY>
 </TABLE>
-<BR /><BR />
-
-<TABLE CLASS='tablesorter-default'>
-<THEAD>
-	<TR><TH>Name</TH> <TH>EVCMode</TH> <TH>VsanEnabled</TH></TR>
-</THEAD>
-<TBODY>
-	<TR><TD>ourLab0</TD> <TD></TD> <TD>False</TD></TR>
-	<TR><TD>SuperCluster</TD> <TD></TD> <TD>True</TD></TR>
-	<TR><TD>Buddies</TD> <TD>intel-sandybridge</TD> <TD>False</TD></TR>
-	<TR><TD>TestCluster0</TD> <TD>intel-nehalem</TD> <TD>False</TD></TR>
-	<TR><TD>HdwTest</TD> <TD></TD> <TD>False</TD></TR>
-	<TR><TD>oldCluster</TD> <TD></TD> <TD>False</TD></TR>
-</TBODY>
-</TABLE>
+<SPAN CLASS='footerInfo'>Generated 2016-Nov-14 20:01:37 GMT-5</SPAN>
 <table>
 </table>
 </body></html>
