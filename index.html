@@ -31,22 +31,24 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>
-<a id="examples-for-newhtmlreport-powershell-module" class="anchor" href="#examples-for-newhtmlreport-powershell-module" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples for NewHtmlReport PowerShell module</h3>
-
-<p>Some sample reports and the code snippets that made them:</p>
-
-<ul>
+        <ul>
 <li>
-<a href="myVMHostReport.htm">myVMHostReport.htm</a>, report with some "highlighted" rows, giving an example of different styling for data items whose values are out of the "norm" range or not of the expected value<br>
-<code>PS C:\&gt; New-HtmlReport -Title "My VMHost Report" -PreContent "&lt;H3&gt;VMHosts Info&lt;/H3&gt;" -PostContent "&lt;SPAN CLASS='footerInfo'&gt;Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')&lt;/SPAN&gt;" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -InputObject (Get-VMHost | Select Name, ConnectionState, MemoryTotalGB, @{n="bDoRowHighlight"; e={$_.ConnectionState -ne "Connected"}}) -Property Name, ConnectionState, MemoryTotalGB -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myVMHostReport.htm</code>
-</li>
+<a href="myVMHostReport.htm">myVMHostReport.htm</a>, report with some "highlighted" rows, giving an example of different styling for data items whose values are out of the "norm" range or not of the expected value:
+    PS C:&gt; New-HtmlReport -Title "My VMHost Report" -PreContent "<h3>
+<a id="vmhosts-info" class="anchor" href="#vmhosts-info" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>VMHosts Info</h3>"
+      -PostContent "Generated $(Get-Date -Format 
+      'yyyy-MMM-dd HH:mm:ss \G\M\Tz')" -TableCaption "highlighted 
+      rows are of VMHosts that are not in 'Connected' state" -InputObject 
+      (Get-VMHost | Select Name, ConnectionState, MemoryTotalGB, 
+      @{n="bDoRowHighlight"; e={$_.ConnectionState -ne "Connected"}}) -Property Name,
+      ConnectionState, MemoryTotalGB -RoundNumber -NumDecimalPlace 1 | Out-File
+      -Encoding ascii c:\temp\myVMHostReport.htm</li>
 <li>
-<a href="myDatastoreClusterReport.htm">myDatastoreClusterReport.htm</a>, report highlighted rows again, but with taking input objects for report from pipeline<br>
+<a href="myDatastoreClusterReport.htm">myDatastoreClusterReport.htm</a>, report with highlighted rows again, but with taking the input objects for the report from pipeline:<br>
 <code>PS C:\&gt; Get-DatastoreCluster | Select Name, @{n="CapacityTB"; e={$_.CapacityGB/1kb}}, @{n="FreeSpaceTB"; e={$_.FreeSpaceGB/1kb}}, SdrsAutomationLevel, @{n="bDoRowHighlight"; e={$_.SdrsAutomationLevel -ne "FullyAutomated"}} | New-HtmlReport -Title "My DatastoreCluster Report" -PreContent "&lt;H3&gt;DatastoreCluster Info&lt;/H3&gt;" -PostContent "&lt;SPAN CLASS='footerInfo'&gt;Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')&lt;/SPAN&gt;" -TableCaption "highlighted rows are of DatastoreClusters where SdrsAutomationLevel is not 'FullyAutomated'" -Property Name, CapacityTB, FreeSpaceTB, SdrsAutomationLevel -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myDatastoreClusterReport.htm</code>
 </li>
 <li>
-<a href="myCombinedReport.htm">myCombinedReport.htm</a>, report with multiple tables from multiple sources of data, each with independent sortability<br>
+<a href="myCombinedReport.htm">myCombinedReport.htm</a>, report with multiple tables from multiple sources of data, each with independent sortability:<br>
 <code>PS C:\&gt; New-HtmlReport -Title "My Combined Report" -PostContent "&lt;BR /&gt;",(New-PageBodyTableHtml -InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore) -Property Name, FreeSpaceGB, CapacityGB -RoundNumber -PreContent "&lt;H3&gt;Combined report of datastores and clusters&lt;/H3&gt;" | Out-File -Encoding ascii c:\temp\myCombinedReport.htm</code>
 </li>
 </ul>
