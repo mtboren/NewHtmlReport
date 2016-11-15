@@ -1,4 +1,0 @@
-[feat_AddPipelineSupport]
-done:
-- added support for accepting objects from pipeline in New-HtmlReport function
-- changed scope of config items (like `$hshConfigItems_NewHtmlReport`) -- by moving from `ScriptsToProcess` to `NestedModules` in .psd1; verified -- `NestedModules` is available in PowerShell v2

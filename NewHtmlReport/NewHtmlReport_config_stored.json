@@ -1,0 +1,7 @@
+﻿{
+    "Scope":  "AllUsers",
+    "jQueryURI":  "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+    "jQueryTableSorterURI":  "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/js/jquery.tablesorter.min.js",
+    "TableSorterCssURI":  "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.27.8/css/theme.default.min.css",
+    "DefaultReportTitleHtml":  "Reporting Info"
+}

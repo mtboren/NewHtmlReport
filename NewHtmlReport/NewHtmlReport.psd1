@@ -9,7 +9,7 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-ModuleToProcess = 'New-HtmlReport.psm1'
+ModuleToProcess = 'NewHtmlReport.psm1'
 
 # Version number of this module.
 ModuleVersion = '1.1'
@@ -63,7 +63,7 @@ PowerShellVersion = '2.0'
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess. Scripts (.ps1) that are listed in the NestedModules key are run in the module's session state
-NestedModules = @('New-HtmlReport_configItems.ps1')
+NestedModules = @('NewHtmlReport_configItems.ps1')
 
 # Functions to export from this module
 FunctionsToExport = '*'
@@ -81,8 +81,7 @@ AliasesToExport = '*'
 # ModuleList = @()
 
 # List of all files packaged with this module
-FileList = 'NewHtmlReport.psd1', 'New-HtmlReport.psm1',
-               'New-HtmlReport_configItems.ps1'
+FileList = 'NewHtmlReport.psd1', 'NewHtmlReport.psm1', 'NewHtmlReport_configItems.ps1', "NewHtmlReport_config_stored.json", "NewHtmlReport_config_stored_default.json"
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess
 # PrivateData = ''

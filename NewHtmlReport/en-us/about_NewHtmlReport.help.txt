@@ -3,76 +3,59 @@ TOPIC
 
 SHORT DESCRIPTION
     A PowerShell module with cmdlets to create partial- or full HTML output
-    from data in a PowerShell session, and provides some additional
-    functionality and features beyond the wonderful ConvertTo-Html cmdlet.
+    with table(s) of data from data in a PowerShell session, and that provides
+    some additional functionality and features beyond the wonderful
+    ConvertTo-Html cmdlet.
 
 LONG DESCRIPTION
-    This module provides cmdlets for creating HTML to represent data from a
-    PowerShell session.  While it does leverage ConvertTo-Html for the some of
-    the final output, the module provides additional functionality by allowing
-    for "highlighting" of desired rows, and for handling number formatting in
-    the form of rounding, so as to remove the bit of additional work anytime a
-    user wants to round values for eventual output.
+    This module provides cmdlets for creating HTML to represent in table
+    format the given data from a PowerShell session.  While it does leverage
+    ConvertTo-Html for the some of the final output, the module provides
+    additional functionality by allowing for "highlighting" of desired rows,
+    and for handling number formatting in the form of rounding, so as to
+    remove the bit of additional work anytime a user wants to round values for
+    eventual output.
 
     The module leverages the jQuery framework and the TableSorter jQuery plugin
     for making consistent, usable table layouts for your data.  The module
-    expects that these JavaScript files are hosted centrally, which allows for
-    the generate HTML output to simply link to the JavaScript libraries,
-    instead of needing to embed the JavaScript code into each output file.
-    While there are example copies of these JS libraries in the "resources"
-    folder in the Git repository, consumers are encouraged to use their own,
-    current versions of these libraries, as the repo copies are not being kept
-    current as the libraries continue to grow.
+    expects that these JavaScript files are hosted centrally (anywhere
+    accessible via the resulting HTML code), which allows for the generated
+    HTML output to simply link to the JavaScript libraries, instead of needing
+    to embed the JavaScript code into each output file.
 
   CONFIGURATION
-      The module comes with a configuration file that is loaded into the
-      current PowerShell session at module import time.  The current means by
-      which to update the configuration is just manual file editing.  The
-      intention is to eventually support module configuration management
-      through another cmdlet in the module.
+      The module supports configuration through a pair of cmdlets and by using
+      JSON-data file for persisting configuration values.  The default
+      configuration is loaded into the current PowerShell session at the first
+      module import time.  Two configuration scopes exist:  AllUsers and
+      Session.
 
-      The configuration file (New-HtmlReport_configItems.ps1 in the module's
-      directory) holds items like:
-        - the base URI of the web server on which library- and style files
-            reside
-        - the URIs of the supporting web files (the JavaScript libraries and
-            the CSS file)
-        - some default HTML for the <HEAD> of new HTML reports, which includes
-            the references to the supporting JavaScript libraries, and some
-            JavaScript to enable table sorting and table row zebra striping
+      The Session scope is the scope from the module's main cmdlets get their
+      configuration values.  The very first use of the newly obtained module
+      has both the Session and AllUsers scopes with the same values.  Changing
+      a Session-scoped configuration value sets that desired value for the
+      duration of the PowerShell session, only.
 
-      These configuration values are placed into a global configuration
-      variable for the current PowerShell session so that the NewHtmlReport
-      module's cmdlets can leverage them.
+      The AllUsers scope is the scope that persists across PowerShell
+      sessions. When the consumer sets a configuration value in the AllUsers
+      scope, this updated AllUsers configuration is written to the JSON file
+      in the module's filesystem directory.  This expects that the consumer
+      has Write rights to said directory.  Changing a configuration item in
+      the AllUsers scope will not affect the configuration for the current
+      PowerShell session.
 
-      The consumer of this module is expected to place the pertinent resource
-      files on their web server in the appropriate locations (the locations
-      that they specified in the configuration file).  So, if you are using
-      "https://mywebserver.dom.com" as the base web server URI, and specified
-      "scripts/jquery.min.js", "scripts/jquery.tablesorter.min.js", and
-      "incl/reportingDefault.css" as the resource files' paths, then you need
-      to have copied "jquery.min.js" and "jquery.tablesorter.min.js" to the
-      filesystem location that corresponds to
-      https://mywebserver.dom.com/scripts/, and have copied
-      "reportingDefault.css" to the filesystem location that corresponds to
-      https://mywebserver.dom.com/incl/
+      To update the configuration values both in the current PowerShell
+      session and for all subsequent PowerShell sessions, one should specify
+      both the Session and AllUsers scopes when using the
+      Set-NewHtmlReportConfiguration cmdlet.
 
-      And, as for the images used for the "ascending", "descending", and
-      "sortable" indicators for column sort direction in HTML tables, the
-      example CSS file specifies a style selector that points at the relative
-      URLs, "/imgs/jq/asc.gif", "/imgs/jq/desc.gif", and "/imgs/jq/bg.gif"
-      respectively.  So, you can either specify your own image URLs for these
-      images, or, place your desired GIFs at locations that correspond to these
-      same URLs on your web server.  Or, you will just be sure to use CSS that
-      points to the image files that you desire, if any.  The CSS selector
-      statement for the ascending-sort image in the default CSS file, for
-      example:
+      The consumer of this module can either leverage the default content
+      delivery network (CDN) locations of the JavaScript/CSS files, or can
+      choose to host the pertinent resource files on their web server in the
+      appropriate locations (the locations that they specified in the module
+      configuration).
 
-          table.tSorter thead tr .headerSortUp {
-            background-image: url(/imgs/jq/asc.gif);
-          }
-
-    USE CASES
+  USE CASES
       The cmdlets in this module are useful for creating HTML for either full
       web pages, or for creating the table HTML for use in some other HTML
       document.  The full web pages are complete with code that will include
@@ -106,7 +89,7 @@ EXAMPLES
 
 
 KEYWORDS
-    HtmlReport
+    HtmlReport, NewHtmlReport
 
 SEE ALSO
     The GitHub site from which you got this PSModule, or http://vNugglets.com

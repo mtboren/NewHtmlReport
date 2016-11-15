@@ -1,22 +1,16 @@
 ### ToDo:
-- add ability to manage module configuration via cmdlet in module, instead of requiring user to manually edit configuration file in module directory
-  - by leveraging JSON-based configs file, and new `Get-HtmlReportConfiguration` and `Set-HtmlReportConfiguration` cmdlets?
-  - allow for scope of setting:  (Session, AllUsers), or (Process, AllUsers), or?
-  - need to consider how to not change this at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
-  - remove the global $str* variables currently in use by module (put them into the `hshConfigItems` hashtable)
-- add pipeline support to accept objects from pipeline in New-HtmlReport and maybe New-PageBodyTableHtml
-- add support to New-PageBodyTableHtml to take InputObject from pipeline?
+- add support to `New-PageBodyTableHtml` to take InputObject from pipeline?
 - update tests for parameter usage in functions (instead of `if ($param) {}..`, use `if ($PSBoundParameters.ContainsKey('MyParam')) {}..`)
 - add some sample HTML files (but, with doctored paths to resource files)
-- for `New-HtmlReport` function:  make function to create HTML that uses datasource from JSON
+- for `New-HtmlReport` function:  make function to create HTML that uses datasource from JSON -- likely involving using DataTables
 	- eventually support CSV, XML, or whatevs for data format?
-- set default values for jQuery and TableSorter URLs to be CDN links?
-	- allows for instant (no-config) use of module, assuming that an internet connection is in place
-	- make it known to consumer that these are default, if so (for their privacy/internet usage consideration)
-	- if doing so, also add something like the following, which essentially "falls back" to adding ref to local .js copy if the page was unable to grab the CDN-based .js (as described at http://webcache.googleusercontent.com/search?q=cache:http://www.impressivewebs.com/linking-to-jquery/):
+- add support for multiple values to CssUri in `New-HtmlReport`
+- for having set default values for jQuery and TableSorter URLs to be CDN links:
+	- ?also add something like the following, which essentially "falls back" to adding ref to local .js copy if the page was unable to grab the CDN-based .js (as described at http://webcache.googleusercontent.com/search?q=cache:http://www.impressivewebs.com/linking-to-jquery/):
 
 		`<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>`
     `<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>`
+    - ?add options to set Tablesorter theme (as shown to be available at https://mottie.github.io/tablesorter/docs/themes.html); do so via TablesorterThemeName type of enumerated config option, which updates the table class and somehow the .CSS file?
 - add option to make [DataTables](https://datatables.net) table instead of TableSorter:
 	- make the HTML that will support/enable such tables
 	- for data, either embed as JSON array in the HTML, or give option to generate JSON from input objects
@@ -26,3 +20,5 @@
 	- add additional config items for:
 		- DataTables JS, CSS URLs
 	- ?include .css that overrides the sorting icon PNGs from default DataTables CSS -- need a way to enable/disable that, if not using default DataTables CSS (else would override people's customized/local DataTables CSS)
+  - will .js and .css from CDNs work for all for datatables.net?  Like, imgs and whatnot? Or, need .css overrides for PNGs for when default CDN .css is in use?
+- need to consider how to not change/overwrite module settings at module upgrade time (make settings sticky across module upgrades, make settings exportable?)

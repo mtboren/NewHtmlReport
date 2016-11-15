@@ -1,3 +1,0 @@
-These are copies of example CSS and JS files that could be used for defaults for new HTML reports.  You should grab desired, current versions of the jQuery and TableSorter JavaScript files from the official sources (https://jquery.com/, http://tablesorter.com).  These copies are not meant to infringe upon any distribution usage/rights dictated by the respective packages.
-
-These particular files are not actually used by the module:  they are files that you would place on a web server somewhere, as pointed at by the code in the HTML report output (as specified in the module's configuration file).
