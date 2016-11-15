@@ -31,7 +31,7 @@ done:
       - one that uses row-highlighting example
       - one that uses multiple tables in one page
   - updated changelog
+  - updated examples in GitHub page for this module
 
 do:
-  - update examples in GitHub page for this module
   - move doing to done

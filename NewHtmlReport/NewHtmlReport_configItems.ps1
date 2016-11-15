@@ -21,6 +21,7 @@ $strTablesorterHeadScriptblock = @"
 ## small bit of CSS to include by default
 $strHtmlReportDefaultCssBlock = @"
 <style>
+BODY {font-family: /* "Trebuchet MS",*/ Verdana, Arial, Sans-Serif;}
 /* for table caption */
 table.$strTablesorterTableCssClass caption.tblCaption {
 	caption-side: bottom;
