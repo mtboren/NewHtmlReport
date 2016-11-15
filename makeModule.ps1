@@ -13,16 +13,18 @@ $hshModManifestParams = @{
 	## when setting value for DefaultCommandPrefix in module, need to account for that when setting value for Aliases anywhere (need to code those to point at what the functions _will_ be called when the DefaultCommandPrefix is applied)
 	#DefaultCommandPrefix = ""
 	#FormatsToProcess = "SomeModule.format.ps1xml"
-	ModuleToProcess = "New-HtmlReport.psm1"
-	ModuleVersion = "1.1"
+	ModuleToProcess = "NewHtmlReport.psm1"
+	ModuleVersion = "1.2"
 	## scripts (.ps1) that are listed in the NestedModules key are run in the module's session state, not in the caller's session state. To run a script in the caller's session state, list the script file name in the value of the ScriptsToProcess key in the manifest
-	#NestedModules = $null
+	NestedModules = @('NewHtmlReport_configItems.ps1')
 	PowerShellVersion = [System.Version]"2.0"
 	Description = "Module with function to create HTML output with nice layout/features (jQuery integration, for example)"
 	## specifies script (.ps1) files that run in the caller's session state when the module is imported. You can use these scripts to prepare an environment, just as you might use a login script
-	ScriptsToProcess = "New-HtmlReport_configItems.ps1"
-	#VariablesToExport = ''
-	FileList = 'NewHtmlReport.psd1', 'New-HtmlReport.psm1', 'New-HtmlReport_configItems.ps1'
+	# ScriptsToProcess = "New-HtmlReport_configItems.ps1"
+	VariablesToExport = @()
+	AliasesToExport = @()
+	CmdletsToExport = @()
+	FileList = Write-Output NewHtmlReport.psd1, NewHtmlReport.psm1, NewHtmlReport_configItems.ps1, NewHtmlReport_config_stored.json, NewHtmlReport_config_stored_default.json
 	Verbose = $true
 }
 ## using -PassThru so as to pass the generated module manifest contents to a var for later output as ASCII (instead of having a .psd1 file of default encoding, Unicode)
