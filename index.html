@@ -1,75 +1,74 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="NewHtmlReport : PowerShell module to easily create functional, somewhat styled HTML reports from data, providing additional functionality to what the base ConvertTo-Html cmdlet provides">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>NewHtmlReport</title>
+    <meta charset="UTF-8">
+    <title>NewHtmlReport by mtboren</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">NewHtmlReport</h1>
+      <h2 class="project-tagline">PowerShell module to easily create functional, somewhat styled HTML reports from data, providing additional functionality to what the base ConvertTo-Html cmdlet provides</h2>
+      <a href="https://github.com/mtboren/NewHtmlReport" class="btn">View on GitHub</a>
+      <a href="https://github.com/mtboren/NewHtmlReport/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/mtboren/NewHtmlReport/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/mtboren/NewHtmlReport">View on GitHub</a>
+    <section class="main-content">
+      <h3>
+<a id="examples-for-newhtmlreport-powershell-module" class="anchor" href="#examples-for-newhtmlreport-powershell-module" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples for NewHtmlReport PowerShell module</h3>
 
-          <h1 id="project_title">NewHtmlReport</h1>
-          <h2 id="project_tagline">PowerShell module to easily create functional, somewhat styled HTML reports from data, providing additional functionality to what the base ConvertTo-Html cmdlet provides</h2>
+<p>Some sample reports and the code snippets that made them:</p>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/mtboren/NewHtmlReport/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/mtboren/NewHtmlReport/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+<ul>
+<li>
+<p><a href="myVMHostReport.htm">myVMHostReport.htm</a>, report with some "highlighted" rows, giving an example of different styling for data items whose values are out of the "norm" range or not of the expected value:</p>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a id="examples-for-newhtmlreport-powershell-module" class="anchor" href="#examples-for-newhtmlreport-powershell-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples for NewHtmlReport PowerShell module</h3>
+<pre><code>PS C:\&gt; New-HtmlReport -Title "My VMHost Report" -PreContent "&lt;H3&gt;VMHosts Info&lt;/H3&gt;" `
+-PostContent "&lt;SPAN CLASS='footerInfo'&gt;Generated $(Get-Date -Format `
+'yyyy-MMM-dd HH:mm:ss \G\M\Tz')&lt;/SPAN&gt;" -TableCaption "highlighted rows are of VMHosts that `
+are not in 'Connected' state" -InputObject (Get-VMHost | Select Name, ConnectionState, `
+MemoryTotalGB, @{n="bDoRowHighlight"; e={$_.ConnectionState -ne "Connected"}}) -Property `
+Name, ConnectionState, MemoryTotalGB -RoundNumber -NumDecimalPlace 1 | Out-File `
+-Encoding ascii c:\temp\myVMHostReport.htm
+</code></pre>
+</li>
+<li>
+<p><a href="myDatastoreClusterReport.htm">myDatastoreClusterReport.htm</a>, report with highlighted rows again, but with taking the input objects for the report from pipeline:</p>
 
-<p>There are some example outputs as noted in the table here:</p>
+<pre><code>PS C:\&gt; Get-DatastoreCluster | Select Name, @{n="CapacityTB"; e={$_.CapacityGB/1kb}}, `
+@{n="FreeSpaceTB"; e={$_.FreeSpaceGB/1kb}}, SdrsAutomationLevel, @{n="bDoRowHighlight"; `
+e={$_.SdrsAutomationLevel -ne "FullyAutomated"}} | New-HtmlReport -Title "My `
+DatastoreCluster Report" -PreContent "&lt;H3&gt;DatastoreCluster Info&lt;/H3&gt;" -PostContent `
+"&lt;SPAN CLASS='footerInfo'&gt;Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')`
+&lt;/SPAN&gt;" -TableCaption "highlighted rows are of DatastoreClusters where SdrsAutomationLevel `
+is not 'FullyAutomated'" -Property Name, CapacityTB, FreeSpaceTB, SdrsAutomationLevel `
+-RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myDatastoreClusterReport.htm
+</code></pre>
+</li>
+<li>
+<p><a href="myCombinedReport.htm">myCombinedReport.htm</a>, report with multiple tables from multiple sources of data, each with independent sortability:</p>
 
-<table>
-<thead>
-<tr>
-<th>sample report</th>
-<th>command that made it</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="myVMHostReport.htm">myVMHostReport.htm</a>, report with some "highlighted" rows, giving an example of different styling for data items whose values are out of the "norm" range or not of the expected value</td>
-<td><code>PS C:\&gt; New-HtmlReport -Title "My VMHost Report" -PreContent "&lt;H3&gt;VMHosts Info&lt;/H3&gt;" -PostContent "Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -InputObject (Get-VMHost | Select Name, ConnectionState, MemoryTotalGB, @{n="bDoRowHighlight"; e={if ($_.ConnectionState -ne "Connected") {$true}}}) -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myVMHostReport.htm</code></td>
-</tr>
-<tr>
-<td>
-<a href="myCombinedReport.htm">myCombinedReport.htm</a>, report with multiple tables from multiple sources of data, each with independent sortability</td>
-<td><code>PS C:\&gt; New-HtmlReport -Title "My Combined Report" -PostContent "&lt;BR /&gt;",(New-PageBodyTableHtml -InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore) -Property Name, FreeSpaceGB, CapacityGB -RoundNumber -PreContent "&lt;H3&gt;Combined report of datastores and clusters&lt;/H3&gt;" | Out-File -Encoding ascii c:\temp\myCombinedReport.htm</code></td>
-</tr>
-</tbody>
-</table>
+<pre><code>PS C:\&gt; New-HtmlReport -Title "My Combined Report" -PostContent "&lt;BR /&gt;",(New-PageBodyTableHtml `
+-InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore) `
+-Property Name, FreeSpaceGB, CapacityGB -RoundNumber -PreContent "&lt;H3&gt;Combined report of `
+datastores and clusters&lt;/H3&gt;" | Out-File -Encoding ascii c:\temp\myCombinedReport.htm
+</code></pre>
+</li>
+</ul>
 
-<p>Note: the CSS and links to resources in these examples are made relative for the purposes of hosting these pages [wherever]. Actual generated reports will use the webserver that you have configured instead of relative paths</p>
-      </section>
-    </div>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/mtboren/NewHtmlReport">NewHtmlReport</a> is maintained by <a href="https://github.com/mtboren">mtboren</a>.</span>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">NewHtmlReport maintained by <a href="https://github.com/mtboren">mtboren</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
 
-    
+    </section>
 
+  
   </body>
 </html>
