@@ -32,22 +32,27 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h3>
-<a id="examples-for-newhtmlreport-powershell-module" class="anchor" href="#examples-for-newhtmlreport-powershell-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples for NewHtmlReport PowerShell module</h3>
+<a id="examples-for-newhtmlreport-powershell-module" class="anchor" href="#examples-for-newhtmlreport-powershell-module" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples for NewHtmlReport PowerShell module</h3>
 
 <p>There are some example outputs as noted in the table here:</p>
 
 <table>
 <thead>
 <tr>
-<th>sample report</th>
-<th>command that made it</th>
+<th>Sample Report</th>
+<th>Command that made report</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>
 <a href="myVMHostReport.htm">myVMHostReport.htm</a>, report with some "highlighted" rows, giving an example of different styling for data items whose values are out of the "norm" range or not of the expected value</td>
-<td><code>PS C:\&gt; New-HtmlReport -Title "My VMHost Report" -PreContent "&lt;H3&gt;VMHosts Info&lt;/H3&gt;" -PostContent "Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -InputObject (Get-VMHost | Select Name, ConnectionState, MemoryTotalGB, @{n="bDoRowHighlight"; e={if ($_.ConnectionState -ne "Connected") {$true}}}) -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myVMHostReport.htm</code></td>
+<td><code>PS C:\&gt; New-HtmlReport -Title "My VMHost Report" -PreContent "&lt;H3&gt;VMHosts Info&lt;/H3&gt;" -PostContent "&lt;SPAN CLASS='footerInfo'&gt;Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')&lt;/SPAN&gt;" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -InputObject (Get-VMHost | Select Name, ConnectionState, MemoryTotalGB, @{n="bDoRowHighlight"; e={$_.ConnectionState -ne "Connected"}}) -Property Name, ConnectionState, MemoryTotalGB -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myVMHostReport.htm</code></td>
+</tr>
+<tr>
+<td>
+<a href="myDatastoreClusterReport.htm">myDatastoreClusterReport.htm</a>, report highlighted rows again, but with taking input objects for report from pipeline</td>
+<td><code>PS C:\&gt; Get-DatastoreCluster | Select Name, @{n="CapacityTB"; e={$_.CapacityGB/1kb}}, @{n="FreeSpaceTB"; e={$_.FreeSpaceGB/1kb}}, SdrsAutomationLevel, @{n="bDoRowHighlight"; e={$_.SdrsAutomationLevel -ne "FullyAutomated"}} | New-HtmlReport -Title "My DatastoreCluster Report" -PreContent "&lt;H3&gt;DatastoreCluster Info&lt;/H3&gt;" -PostContent "&lt;SPAN CLASS='footerInfo'&gt;Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')&lt;/SPAN&gt;" -TableCaption "highlighted rows are of DatastoreClusters where SdrsAutomationLevel is not 'FullyAutomated'" -Property Name, CapacityTB, FreeSpaceTB, SdrsAutomationLevel -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myDatastoreClusterReport.htm</code></td>
 </tr>
 <tr>
 <td>
@@ -56,8 +61,6 @@
 </tr>
 </tbody>
 </table>
-
-<p>Note: the CSS and links to resources in these examples are made relative for the purposes of hosting these pages [wherever]. Actual generated reports will use the webserver that you have configured instead of relative paths</p>
       </section>
     </div>
 
