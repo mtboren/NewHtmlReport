@@ -1,4 +1,17 @@
-### Changelog
+### NewHtmlReport PowerShell Module Changelog
+### v1.2, Nov 2016:
+- \[new] added ability to manage module configuration via cmdlets in module, instead of requiring user to manually edit configuration file in module directory
+	- leverages JSON-based config file and new cmdlets `Get-NewHtmlReportConfiguration`, `Set-NewHtmlReportConfiguration`, and `Reset-NewHtmlReportConfiguration`
+	- allows for scope of setting:  Session, AllUsers
+	- enables module configuration in more natural, cmdlet-based way
+- \[new] added support for accepting objects from pipeline in `New-HtmlReport` function
+- \[update] changed from defaulting to local resources (JS and CSS files) to now defaulting to online CDN locations for such resources
+	- consequently, removed `resources\` folder and contents from project
+	- while this makes getting started much easier/quicker (see Quick Start section in [readme.md](./readme.md)), to be clear about what else this does:  this new default configuration makes the HTML that this module generates dependent upon the consumer of the HTML document having internet access when viewing the HTML document
+- \[update] changed from using Christian Bach's [original TableSorter](http://tablesorter.com/) jQuery plugin to using the [Mottie's](https://github.com/Mottie) more actively developed [tablesorter fork](https://github.com/Mottie/tablesorter)
+	- props still go to CBach for providing the great plugin!
+	- now using the default theme provided by this forked plugin, too
+	- still using a minor bit of the original CSS styling that has been a part of this `NewHtmlReport` module since the beginning
 
 ### v1.1, Dec 2015:
 - first public release
