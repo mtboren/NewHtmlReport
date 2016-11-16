@@ -1,5 +1,6 @@
 ### ToDo:
 - add MIT license
+- add Related Links items to cmdlets (via .LINK keyword in comment-based help, and to list related cmdlets for each cmdlet, like the get/set/reset config cmdlets)
 - work on release automation (update make file, license year check/update, module .zip creation, etc)
 - add support to `New-PageBodyTableHtml` to take InputObject from pipeline?
 - update tests for parameter usage in functions (instead of `if ($param) {}..`, use `if ($PSBoundParameters.ContainsKey('MyParam')) {}..`)
