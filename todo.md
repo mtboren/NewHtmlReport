@@ -1,4 +1,7 @@
 ### ToDo:
+- override default table width, setting to "auto" (default TableSorter theme from Mottie sets width to "100%"):
+	- item to override:  .tablesorter-default {width:100%;}
+- fix [issue #1](https://github.com/mtboren/NewHtmlReport/issues/1) about default property order from input object if no `-Property` value specified
 - add MIT license
 - add Related Links items to cmdlets (via .LINK keyword in comment-based help, and to list related cmdlets for each cmdlet, like the get/set/reset config cmdlets)
 - work on release automation (update make file, license year check/update, module .zip creation, etc)
