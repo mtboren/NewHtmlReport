@@ -32,9 +32,8 @@
 -PostContent "&lt;SPAN CLASS='footerInfo'&gt;Generated $(Get-Date -Format `
 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')&lt;/SPAN&gt;" -TableCaption "highlighted rows are of VMHosts that `
 are not in 'Connected' state" -InputObject (Get-VMHost | Select Name, ConnectionState, `
-MemoryTotalGB, @{n="bDoRowHighlight"; e={$_.ConnectionState -ne "Connected"}}) -Property `
-Name, ConnectionState, MemoryTotalGB -RoundNumber -NumDecimalPlace 1 | Out-File `
--Encoding ascii c:\temp\myVMHostReport.htm
+MemoryTotalGB, @{n="bDoRowHighlight"; e={$_.ConnectionState -ne "Connected"}}) -RoundNumber `
+-NumDecimalPlace 1 | Out-File -Encoding utf8 c:\temp\myVMHostReport.htm
 </code></pre>
 </li>
 <li>
@@ -46,8 +45,8 @@ e={$_.SdrsAutomationLevel -ne "FullyAutomated"}} | New-HtmlReport -Title "My `
 DatastoreCluster Report" -PreContent "&lt;H3&gt;DatastoreCluster Info&lt;/H3&gt;" -PostContent `
 "&lt;SPAN CLASS='footerInfo'&gt;Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')`
 &lt;/SPAN&gt;" -TableCaption "highlighted rows are of DatastoreClusters where SdrsAutomationLevel `
-is not 'FullyAutomated'" -Property Name, CapacityTB, FreeSpaceTB, SdrsAutomationLevel `
--RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myDatastoreClusterReport.htm
+is not 'FullyAutomated'" -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding utf8 `
+c:\temp\myDatastoreClusterReport.htm
 </code></pre>
 </li>
 <li>
