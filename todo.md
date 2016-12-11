@@ -1,9 +1,4 @@
 ### ToDo:
-- override default table width, setting to "auto" (default TableSorter theme from Mottie sets width to "100%"):
-	- item to override:  .tablesorter-default {width:100%;}
-- fix [issue #1](https://github.com/mtboren/NewHtmlReport/issues/1) about default property order from input object if no `-Property` value specified
-- add MIT license
-- add Related Links items to cmdlets (via .LINK keyword in comment-based help, and to list related cmdlets for each cmdlet, like the get/set/reset config cmdlets)
 - work on release automation (update make file, license year check/update, module .zip creation, etc)
 - add support to `New-PageBodyTableHtml` to take InputObject from pipeline?
 - update tests for parameter usage in functions (instead of `if ($param) {}..`, use `if ($PSBoundParameters.ContainsKey('MyParam')) {}..`)
@@ -28,3 +23,12 @@
 	- ?include .css that overrides the sorting icon PNGs from default DataTables CSS -- need a way to enable/disable that, if not using default DataTables CSS (else would override people's customized/local DataTables CSS)
   - will .js and .css from CDNs work for all for datatables.net?  Like, imgs and whatnot? Or, need .css overrides for PNGs for when default CDN .css is in use?
 - need to consider how to not change/overwrite module settings at module upgrade time (make settings sticky across module upgrades, make settings exportable?)
+
+## Doing:
+\[feat_MinorUpdates]
+- add Related Links items to cmdlets (via .LINK keyword in comment-based help, and to list related cmdlets for each cmdlet, like the get/set/reset config cmdlets)
+- add MIT license
+- override default table width, setting to "auto" (default TableSorter theme from Mottie sets width to "100%"):
+	- item to override:  .tablesorter-default {width:100%;}
+- added left/right borders to TD items, for legibility of columns
+- fix [issue #1](https://github.com/mtboren/NewHtmlReport/issues/1) about default property order from input object if no `-Property` value specified
