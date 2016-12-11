@@ -28,6 +28,15 @@ table.$strTablesorterTableCssClass caption.tblCaption {
 	font-size: small;
 	vertical-align: bottom;
 }
+/* override default table width to be auto, border-collapse to collapse */
+table.$strTablesorterTableCssClass {
+	border-collapse: collapse;
+	width: auto;
+}
+/* set overall border in table TD (has no left/right border by default) */
+table.$strTablesorterTableCssClass TR TD {border: #ccc 1px solid;}
+/* set overall border in table TH (has no left/right/top border by default) */
+//table.$strTablesorterTableCssClass TR TH {border-color: #ccc; border-style: solid; border-width: 1px 1px 2px 1px;}
 /* for table rows that are to be "highlighted" */
 table.$strTablesorterTableCssClass tbody tr.highlightRow td {color: #FF0000;}
 /* for footer-type info areas */

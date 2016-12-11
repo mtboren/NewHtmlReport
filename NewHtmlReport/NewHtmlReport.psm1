@@ -1,14 +1,25 @@
 <#	.Description
-	Code to encapsulate the creation of HTML report files from objects.  May 2013, Matt Boren
+	Code to encapsulate the creation of HTML report files from objects, either from pipeline, or as explicit InputObjects.  Leverages jQuery and jQuery plugins for active tables that support sorting.
+
 	.Example
-	New-HtmlReport -InputObject (dir c:\temp -filter *txt) -PreContent "blahh0","blahh1" -CssUri "/someFolder/someFile.css" -Property Name,LastWriteTime -Title "another test of output"
-	Create HTML output for an array of objects, with given stylesheet, and using built-in HTML for creating sortable table
+	Get-VM | Sort-Object UsedSpaceGB -Descending:$true | Select-Object -First 10 -Property Name, PowerState, UsedSpaceGB | New-HtmlReport -RoundNumber | Out-File -Encoding utf8 c:\temp\myBigVMReport.htm
+	Get the top ten VMs based on UsedSpaceGB, then create an HTML report with their choice information in a table, and write that HTML out to the given file for later consumption
+
 	.Example
-	Get-VMHost | Select-Object Name,ConnectionState,MemoryTotalGB,@{n="bDoRowHighlight"; e={$_.ConnectionState -ne "Connected"}} | New-HtmlReport -Title "My VMHost Report" -PreContent "<H3>VMHosts Info</H3>" -PostContent "Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding ascii c:\temp\myVMHostReport.htm
+	Get-VMHost | Select-Object Name, ConnectionState, MemoryTotalGB, @{n="bDoRowHighlight"; e={$_.ConnectionState -ne "Connected"}} | New-HtmlReport -Title "My VMHost Report" -PreContent "<H3>VMHosts Info</H3>" -PostContent "<span class='footerInfo'>Generated $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss \G\M\Tz')</span>" -TableCaption "highlighted rows are of VMHosts that are not in 'Connected' state" -RoundNumber -NumDecimalPlace 1 | Out-File -Encoding utf8 c:\temp\myVMHostReport.htm
 	Create an HTML report for some VMHosts, highlighting any row where the given VMhost is in a state other than "Connected", and write the HTML to a file
+
 	.Example
-	New-HtmlReport -Title "My Combined Report" -PostContent "<BR />",(New-PageBodyTableHtml -InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore) -Property Name,FreeSpaceGB,CapacityGB -RoundNumber -PreContent "<H3>Combined report of datastores and clusters</H3>" | Out-File -Encoding ascii c:\temp\myCombinedReport.htm
+	New-HtmlReport -InputObject (dir c:\temp -filter *txt | Select-Object Name, LastWriteTime) -PreContent "Listing of directory 'c:\temp'","(including only *.txt files)" -Title "My dir listing report"
+	Create HTML output for an array of objects, with given stylesheet, and using built-in HTML for creating sortable table
+
+	.Example
+	New-HtmlReport -Title "My Combined Report" -PostContent "<BR />",(New-PageBodyTableHtml -InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore | Select-Object  Name, FreeSpaceGB, CapacityGB) -RoundNumber -PreContent "<H3>Combined report of datastores and clusters</H3>" | Out-File -Encoding utf8 c:\temp\myCombinedReport.htm
 	Create an HTML report for a few things:  the Datastores in the current vCenter, and the clusters there as well. Then, write the HTML to a file.  Maybe not the most common/useful data to combine in a single report, but this example is to show how to place multiple interactive tables into the same new HTML report
+
+	.Link
+	New-PageBodyTableHtml
+
 	.Outputs
 	String
 #>
@@ -17,20 +28,28 @@ function New-HtmlReport {
 	param(
 		## The Uniform Resource Identifier (URI) of the CSS to apply to the HTML; examples:  "http://myserver.com/mystyle.css" or "/incl/style.css"
 		[string]$CssUri,
+
 		## Homogenous input objects (all have the same properties defined) from which to make the HTML table in the new report
 		[parameter(ValueFromPipeline=$true, Mandatory=$true)][PSObject]$InputObject,
+
 		## Text/HTML to add after the closing </TABLE> tag
 		[string[]]$PostContent,
+
 		## Text/HTML to add before the opening <TABLE> tag
 		[string[]]$PreContent,
+
 		## The properties of the input objects to use in the output; if not specified, all properties are output
 		[string[]]$Property,
+
 		## String to place in the <title> </title> tag in the <HEAD> </HEAD>
 		[string]$Title,
+
 		## String to use as caption for table in output
 		[string]$TableCaption,
+
 		## Switch:  Round numbers to sum number of decimal places?
 		[parameter(ParameterSetName="RoundNumbers")][switch]$RoundNumber,
+
 		## Number of decimal places to which to round. Default is zero.
 		[parameter(ParameterSetName="RoundNumbers")][int]$NumDecimalPlace = 0
 	) ## end param
@@ -94,12 +113,18 @@ function New-HtmlReport {
 
 <#	.Description
 	Function to make, for the body of the whole HTML page to create, table strings from input objects; returns HTML code for the table to represent the info the in array of objects passed in.  The special property, "bDoRowHighlight", will trigger the highlighting of that object's row in the resultant HTML table.  This means that the row is assigned a particular CSS class, which will presumably have a different style such that the text in that row will be "highlighted" with the style specified in the CSS file used.
+
 	.Example
 	New-PageBodyTableHtml -InputObject (Get-ChildItem C:\temp | Select Name,@{n="LengthMB"; e={$_.Length / 1MB}},LastWriteTime) -RoundNumber -NumDecimalPlace 2
 	Makes HTML for a table that has the three properties of the input objects, and rounds number values to two decimal places
+
 	.Example
 	New-PageBodyTableHtml -InputObject (Get-VMHost | Select Name,ConnectionState,MemoryTotalGB,@{n="bDoRowHighlight"; e={if ($_.ConnectionState -ne "Connected") {$true}}}) -RoundNumber -NumDecimalPlace 1
 	Makes HTML for a table that has the three properties of the input objects, rounds number values to two decimal places, and highlights any row where the ConnectionState was not "Connected".  This row highlighting is achieved by adding a "bDoRowHighlight" property with a value of $true to the given object whose row to highlight
+
+	.Link
+	New-HtmlReport
+
 	.Outputs
 	String
 #>
@@ -107,14 +132,19 @@ function New-PageBodyTableHtml {
 	param (
 		## Object(s) from which to make HTML table
 		[parameter(Mandatory=$true)][PSObject[]]$InputObject,
+
 		## The properties of the input object(s) to use in the output; if none specified, all of the object's properties are output
 		[string[]]$Property,
+
 		## The starting HTML to use for the table
 		[string]$TableStartHtml = "`n<TABLE CLASS='$($hshInternalConfigItems_NewHtmlReport["TablesorterTableCssClass"])'>",
+
 		## The ending HTML to use for the table
 		[string]$TableFinishHtml = "</TABLE>",
+
 		## Switch:  Round numbers to sum number of decimal places?
 		[parameter(ParameterSetName="RoundNumbers")][switch]$RoundNumber,
+
 		## Number of decimal places to which to round if rounding
 		[parameter(ParameterSetName="RoundNumbers")][int]$NumDecimalPlace = 0
 	) ## end param
@@ -123,7 +153,7 @@ function New-PageBodyTableHtml {
 	$strDoHighlightPropName = "bDoRowHighlight"
 
 	## the NoteProperties of this input objects, excluding property by given "doHighlight" predefined name (see above)
-	$arrNamesOfPropertiesToUse = if ($PSBoundParameters.ContainsKey("Property")) {$Property} else {$InputObject | Get-Member -MemberType *Property* | Where-Object {$_.Name -ne $strDoHighlightPropName} | Foreach-Object {$_.Name} | Select-Object -Unique}
+	$arrNamesOfPropertiesToUse = if ($PSBoundParameters.ContainsKey("Property")) {$Property} else {($InputObject | Select-Object -First 1).PSObject.Properties | Where-Object {$_.Name -ne $strDoHighlightPropName} | Foreach-Object {$_.Name}}
 
 	$strTableHeadHtml = @"
 <THEAD>
@@ -152,12 +182,19 @@ function New-PageBodyTableHtml {
 
 <#	.Description
 	Function to get the current configuration for the NewHtmlReport module
+
 	.Example
 	Get-NewHtmlReportConfiguration
 	Gets the current configuration (all scopes) for the NewHtmlReport module
+
 	.Example
 	Get-NewHtmlReportConfiguration
 	Gets the current configuration for the Session scope for the NewHtmlReport module
+
+	.Link
+	Reset-NewHtmlReportConfiguration
+	Set-NewHtmlReportConfiguration
+
 	.Outputs
 	PSCustomObject
 #>
@@ -210,12 +247,19 @@ function _Get-NewHtmlConfigFromJsonFile {
 	Function to set the configuration option(s) for the given scope(s) for the NewHtmlReport module.
 
 	Note:  When updating the configuration for the AllUsers scope, the function expects that the user as which PowerShell is running has Write filesystem rights at the location where this module's files reside -- the AllUser configuration is stored in a JSON file therein.  Else, if the module's files are in some read-only location, the user will only be able to set the configuration in the Session scope (does not write to disk).
+
 	.Example
 	Set-NewHtmlReportConfiguration -Scope AllUsers -jQueryURI https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
 	Sets the jQueryURI configuration item value for the AllUsers scope (does not affect current session setting)
+
 	.Example
 	Set-NewHtmlReportConfiguration -jQueryURI https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
 	Sets the jQueryURI configuration item value for the current PowerShell Session's scope (persists in the current PowerShell session, except if this PowerShell module is re-imported with the -Force parameter)
+
+	.Link
+	Get-NewHtmlReportConfiguration
+	Reset-NewHtmlReportConfiguration
+
 	.Outputs
 	PSCustomObject
 #>
@@ -225,12 +269,16 @@ function Set-NewHtmlReportConfiguration {
 	param(
 		## The scope for which to save this configuration setting. AllUsers writes configuration update to the module directory, Session only updates the configuration in the current PowerShell session. If not specified, only "Session" configuration is changed
 		[ValidateSet("AllUsers", "Session")][String[]]$Scope = "Session",
+
 		## URI at which resides the jquery.js variant to use
 		[ValidateNotNullOrEmpty()][String]$jQueryURI,
+
 		## URI at which resides the TableSorter jQuery add-on JS file to use
 		[ValidateNotNullOrEmpty()][String]$jQueryTableSorterURI,
+
 		## URI at which resides the default CSS file to use for this module, if using TableSorter for the table-management in the HTML
 		[ValidateNotNullOrEmpty()][String]$TableSorterCssURI,
+
 		## The default HTML to put into the TITLE tag for the resulting HTML output, to be used if not overridden by parameters to creating new HTML reports
 		[ValidateNotNullOrEmpty()][String]$DefaultReportTitleHtml
 	) ## end param
@@ -270,9 +318,15 @@ function Set-NewHtmlReportConfiguration {
 	Function to get the reset the current configurations for all scopes for the NewHtmlReport module to the original values that were the defaults that came with the module itself. This overwrites any customized module settings with the orignal, "factory default" values.
 
 	Note:  This expects that the user as which PowerShell is running has Write filesystem rights at the location where this module's files reside -- the AllUser configuration is stored in a JSON file therein.
+
 	.Example
 	Reset-NewHtmlReportConfiguration
 	Resets to "factory defaults" the configuration (all scopes) for the NewHtmlReport module
+
+	.Link
+	Get-NewHtmlReportConfiguration
+	Set-NewHtmlReportConfiguration
+
 	.Outputs
 	PSCustomObject
 #>

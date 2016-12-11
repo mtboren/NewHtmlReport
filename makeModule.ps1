@@ -14,7 +14,7 @@ $hshModManifestParams = @{
 	#DefaultCommandPrefix = ""
 	#FormatsToProcess = "SomeModule.format.ps1xml"
 	ModuleToProcess = "NewHtmlReport.psm1"
-	ModuleVersion = "1.2"
+	ModuleVersion = "1.2.1"
 	## scripts (.ps1) that are listed in the NestedModules key are run in the module's session state, not in the caller's session state. To run a script in the caller's session state, list the script file name in the value of the ScriptsToProcess key in the manifest
 	NestedModules = @('NewHtmlReport_configItems.ps1')
 	PowerShellVersion = [System.Version]"2.0"

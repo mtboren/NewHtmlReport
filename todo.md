@@ -1,4 +1,5 @@
 ### ToDo:
+- work on release automation (update make file, license year check/update, module .zip creation, etc)
 - add support to `New-PageBodyTableHtml` to take InputObject from pipeline?
 - update tests for parameter usage in functions (instead of `if ($param) {}..`, use `if ($PSBoundParameters.ContainsKey('MyParam')) {}..`)
 - add some sample HTML files (but, with doctored paths to resource files)
