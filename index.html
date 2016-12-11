@@ -55,7 +55,7 @@ c:\temp\myDatastoreClusterReport.htm
 <pre><code>PS C:\&gt; New-HtmlReport -Title "My Combined Report" -PostContent "&lt;BR /&gt;",(New-PageBodyTableHtml `
 -InputObject (Get-Cluster) -Property Name, EVCMode, VsanEnabled) -InputObject (Get-Datastore) `
 -Property Name, FreeSpaceGB, CapacityGB -RoundNumber -PreContent "&lt;H3&gt;Combined report of `
-datastores and clusters&lt;/H3&gt;" | Out-File -Encoding ascii c:\temp\myCombinedReport.htm
+datastores and clusters&lt;/H3&gt;" | Out-File -Encoding utf8 c:\temp\myCombinedReport.htm
 </code></pre>
 </li>
 </ul>
